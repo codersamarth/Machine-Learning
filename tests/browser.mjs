@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import {spawn} from "node:child_process";
 import {setTimeout as pause} from "node:timers/promises";
 import {chromium} from "playwright";
-const PORT=8777,base="http://127.0.0.1:"+PORT;
-const server=spawn("python3",["-m","http.server",String(PORT),"--bind","127.0.0.1"],{cwd:process.cwd(),stdio:"ignore"});
+const PORT=8777,base=process.env.ML_BASE_URL||"http://127.0.0.1:"+PORT;
+const server=process.env.ML_BASE_URL?null:spawn("python3",["-m","http.server",String(PORT),"--bind","127.0.0.1"],{cwd:process.cwd(),stdio:"ignore"});
 const failures=[],passes=[];let browser;
 async function check(name,fn){try{await fn();passes.push(name);console.log("PASS "+name)}catch(e){failures.push({name,message:String(e.stack||e)});console.log("FAIL "+name+": "+e.message)}}
 try{
@@ -115,4 +115,4 @@ try{
  console.log("SUMMARY "+JSON.stringify({passes,failures}));
  if(failures.length)process.exitCode=1;
 }catch(e){console.error("Browser setup error:",e);process.exitCode=1}
-finally{if(browser)await browser.close();server.kill("SIGTERM")}
+finally{if(browser)await browser.close();if(server)server.kill("SIGTERM")}
