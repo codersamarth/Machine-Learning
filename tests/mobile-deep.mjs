@@ -15,7 +15,7 @@ try{
     page.on("pageerror",e=>fails.push({width,kind:"JS",detail:e.message}));
     for(const route of routes){
       await page.goto(base+route,{waitUntil:"domcontentloaded"});
-      if(route.startsWith("/#")){const r=route.slice(2);await page.locator('[data-route="'+r+'"]').first().click().catch(()=>{});}
+      if(route.startsWith("/#"))await page.waitForTimeout(50);
       const metrics=await page.evaluate(()=>{
         const doc=document.documentElement,root=document.body;
         const overflow=doc.scrollWidth-innerWidth;
