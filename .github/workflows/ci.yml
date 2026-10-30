@@ -23,6 +23,8 @@ jobs:
           node --check ingest.js
       - name: Run browserless app smoke tests
         run: node tests/smoke.mjs
+      - name: Verify all beginner lessons and code-line explanations
+        run: node tests/journey-smoke.mjs
 
   browser-and-accessibility:
     runs-on: ubuntu-latest
