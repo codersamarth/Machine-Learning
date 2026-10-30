@@ -140,6 +140,13 @@ try{
   await m.locator("#menu").click();await m.locator('[data-route="lab"]').first().click();
   const w=await m.evaluate(()=>[document.documentElement.scrollWidth,window.innerWidth]);
   assert.ok(w[0]<=w[1]+3,"Horizontal overflow: "+JSON.stringify(w));
+  await m.goto(base+"/journey.html");
+  await m.locator("#toggle-menu").click();
+  await m.locator('[data-action="stage:python"]').first().click();
+  await m.waitForURL(/#stage=python/);
+  assert.match(await m.locator("h1").first().innerText(),/Read Python/);
+  const journeyWidth=await m.evaluate(()=>[document.documentElement.scrollWidth,window.innerWidth]);
+  assert.ok(journeyWidth[0]<=journeyWidth[1]+3,"Journey horizontal overflow: "+JSON.stringify(journeyWidth));
   await m.screenshot({path:process.env.ML_SCREENSHOT_PATH||"mobile-qa.png",fullPage:true});
   await mobile.close();
  });
