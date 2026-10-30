@@ -15,6 +15,7 @@ try{
   await page.goto(base+path);
   if(path.includes("cases"))assert.ok(await page.locator("#case-upload").count(),"Case Studio did not load");
   if(path.includes("ingest"))assert.ok(await page.locator("#file-input").count(),"Lecture Import Studio did not load");
+  if(path.includes("journey"))assert.ok(await page.locator("#journey-content").count(),"Guided learning page did not load");
   if(setup)await setup();
   const report=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
   const issue=report.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target.join(" ")).slice(0,5)}));
@@ -27,12 +28,16 @@ try{
  await scan("/#python");
  await scan("/cases.html");
  await scan("/ingest.html");
+ await scan("/journey.html");
+ await scan("/journey.html#lesson=z01");
+ await scan("/journey.html#trace");
+ await scan("/journey.html#search");
  await scan("/cases.html",async()=>{
   const csv=["PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked","1,third,Ada,female,22,0,0,T1,8,,S","2,first,Ben,male,,1,0,T2,55,C1,"].join("\n");
   await page.locator("#case-upload").setInputFiles({name:"Titanic.csv",mimeType:"text/csv",buffer:Buffer.from(csv)});
   await page.waitForFunction(()=>document.querySelector("#case-workspace")?.textContent?.includes("MISSION 1"));
  });
- console.log("A11Y SUMMARY: "+JSON.stringify({scans:7,violations:failures.length}));
+ console.log("A11Y SUMMARY: "+JSON.stringify({scans:11,violations:failures.length}));
  if(failures.length)process.exitCode=1;
 }catch(e){console.error(e);process.exitCode=1}
 finally{if(browser)await browser.close();if(server)server.kill("SIGTERM")}
