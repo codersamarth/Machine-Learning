@@ -11,6 +11,34 @@ try{
  browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
  const ctx=await browser.newContext({viewport:{width:1366,height:900},acceptDownloads:true});
  const p=await ctx.newPage(),errors=[];p.on("pageerror",e=>errors.push(e.message));
+
+ await check("Guided zero-to-code navigation, glossary, bookmarks and real Gelato trace",async()=>{
+   await p.goto(base+"/journey.html");
+   assert.match(await p.locator("h1").first().innerText(),/Understand the code/);
+   await p.locator('[data-action="stage:zero"]').first().click();
+   await p.waitForURL(/#stage=zero/);
+   await p.locator('[data-action="lesson:z01"]').first().click();
+   await p.waitForURL(/#lesson=z01/);
+   assert.match(await p.locator("h1").first().innerText(),/What exactly is code/);
+   await p.locator('[data-action="bookmark:z01"]').first().click();
+   await p.reload();
+   assert.match(await p.locator("h1").first().innerText(),/What exactly is code/);
+   await p.locator("#bookmarks-toggle").click();
+   assert.match(await p.locator("#journey-content").innerText(),/What exactly is code/);
+   await p.locator("#search-toggle").click();
+   await p.locator("#global-search").fill("double brackets");
+   await p.waitForFunction(()=>document.querySelector("#search-results")?.textContent?.includes("Pandas"));
+   await p.goto(base+"/journey.html#trace");
+   await p.locator('[data-action="traceline:3"]').click();
+   assert.match(await p.locator("#journey-content").innerText(),/DataFrame \(13, 1\)/);
+   await p.locator('[data-action="traceline:6"]').click();
+   assert.match(await p.locator("#journey-content").innerText(),/Fitted LinearRegression/);
+   await p.goto(base+"/journey.html#practice");
+   assert.match(await p.locator("h1").first().innerText(),/Code-reading challenges/);
+   await p.locator('[data-action="challengeanswer:1"]').first().click();
+   assert.match(await p.locator("#journey-content").innerText(),/The second assignment reads/);
+ });
+
  await check("Dashboard and live polynomial graph",async()=>{
   await p.goto(base);assert.match(await p.title(),/ML Playground/);
   await p.locator('[data-route="regression"]').first().click();
@@ -36,7 +64,9 @@ try{
  await check("Titanic upload, negative fares, undo and categorical quiz",async()=>{
   await p.goto(base+"/cases.html");
   const csv=["PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked","1,third,Ada,female,22,0,0,T1,8,,S","2,first,Ben,male,,1,0,T2,55,C1,","3,second,Cal,male,34,0,0,T3,-50,,C"].join("\n");
+  assert.match(await p.locator("#upload-status").innerText(),/SYNTHETIC DEMO/);
   await p.locator("#case-upload").setInputFiles({name:"Titanic.csv",mimeType:"text/csv",buffer:Buffer.from(csv)});
+  await p.waitForFunction(()=>document.querySelector("#upload-status")?.textContent?.includes("Loaded 3 rows from Titanic.csv"),null,{timeout:10000});
   await p.getByRole("button",{name:/Remove negative-fare rows/}).click();
   assert.match(await p.locator("#case-workspace").innerText(),/Current negative fares: 0/);
   await p.getByRole("button",{name:/Undo/}).first().click();
@@ -51,6 +81,7 @@ try{
   await p.locator("#tab-diamond").click();
   const csv=["ID,Carat Weight,Cut,Color,Clarity,Polish,Symmetry,Report,Price","1,1.10,Ideal,H,SI1,VG,EX,GIA,5169","2,0.83,Ideal,H,VS1,ID,ID,AGSL,3470","3,0.85,Good,F,SI1,EX,EX,GIA,3183","4,1.18,Ideal,H,SI1,VG,VG,GIA,5900","5,2.1,Fair,D,VVS1,EX,EX,GIA,21000"].join("\n");
   await p.locator("#case-upload").setInputFiles({name:"Sarah_dataset.csv",mimeType:"text/csv",buffer:Buffer.from(csv)});
+  await p.waitForFunction(()=>document.querySelector("#upload-status")?.textContent?.includes("Loaded 5 rows from Sarah_dataset.csv"),null,{timeout:10000});
   await p.waitForFunction(()=>document.querySelector("#case-workspace")?.textContent?.includes("All listings"),null,{timeout:10000});
   assert.match(await p.locator("#case-workspace").innerText(),/All listings/);
   await p.locator('[data-filter="Cut"]').selectOption("Ideal");
