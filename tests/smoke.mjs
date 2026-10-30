@@ -34,13 +34,34 @@ assert.ok(source.includes("window.__test="), "Could not expose app testing funct
 vm.runInNewContext(source, context);
 const t = context.window.__test;
 const fit = t.fitPolynomial(t.C.gelato, 1);
-const slope = fit[1] / 364;
+const slope = (t.modelAt(365,fit) - t.modelAt(1,fit)) / 364;
 assert.ok(Math.abs(slope - (-0.47128097)) < 0.0005, "OLS slope should match actual Gelato data");
 assert.ok(Math.abs(t.modelAt(100, fit) - (205.31873487 - 0.47128097 * 100)) < 0.01);
+const expected = [
+  [47.993039,159.054521],[29.798964,193.555447],
+  [11.027961,219.464922],[10.438705,218.023866],
+  [7.551648,209.043639],[7.549271,208.986602],
+  [7.407011,207.142732],[3.018546,216.657632]
+];
+for(let d=1;d<=8;d++){
+  const fit=t.fitPolynomial(t.C.gelato.slice(0,10),d);
+  const predictor=x=>t.modelAt(x,fit);
+  const stats=t.errorStats(t.C.gelato.slice(0,10),predictor);
+  assert.ok(Math.abs(stats.rmse-expected[d-1][0])<0.001, "Degree "+d+" must match independent NumPy OLS training RMSE");
+  assert.ok(Math.abs(predictor(100)-expected[d-1][1])<0.001, "Degree "+d+" prediction must match NumPy");
+}
+assert.equal(t.C.lessons.length,36);
+for (const lesson of t.C.lessons) {
+  assert.ok(lesson.title && lesson.simple && lesson.university && lesson.pitfall && lesson.source, "Missing instructional content");
+  assert.ok(lesson.choices.length >= 3, "Every lesson should include an interactive check");
+  assert.ok(Number.isInteger(lesson.correct) && lesson.correct >=0 && lesson.correct<lesson.choices.length, "Invalid quiz answer index");
+}
+
 for (const key of ["pageHome", "pageLearn", "pageRegression", "pageLesson", "pageLab", "pageCode", "pagePython", "pageData", "pageQuiz", "pageNotes", "pageStudio"]) {
   const html = t[key]();
   assert.ok(html.length > 150, key + " rendered empty content");
   assert.ok(!html.includes("NaN"), key + " contains a NaN placeholder");
+  assert.ok(!html.includes("undefined"), key + " shows undefined content");
 }
 const csv = 'Name,Age\n"Smith, Ada",21\n"Test ""Quoted""",\n';
 const parsed = t.parseCSV(csv);
