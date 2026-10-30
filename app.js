@@ -178,7 +178,7 @@ document.addEventListener("change",function(e){if(e.target.id==="csv-upload"){va
 $("#theme").addEventListener("click",function(){S.theme=S.theme==="dark"?"light":"dark";save();render()});
 $("#menu").addEventListener("click",function(){$("#sidebar").classList.toggle("open")});
 function restoreRoute(){if(!window.location)return;var hash=window.location.hash.slice(1);if(hash.startsWith("lesson=")){var id=decodeURIComponent(hash.slice(7));if(record(id)){V.lesson=id;V.page="lesson"}}else if(["home","learn","regression","lab","code","python","quiz","notes","studio","data"].includes(hash)){V.page=hash}}
-if(window.addEventListener)window.addEventListener("hashchange",function(){restoreRoute();render()});
+if(window.addEventListener)window.addEventListener("hashchange",function(){var oldPage=V.page,oldLesson=V.lesson;restoreRoute();if(V.page!==oldPage||V.lesson!==oldLesson)render()});
 restoreRoute();
 render();
 })();

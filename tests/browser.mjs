@@ -30,6 +30,7 @@ try{
   await p.locator('[data-act="lesson:r06"]').click();
   assert.ok(await p.locator("#residual-plot svg").count());
   await p.locator("#residual-pred").evaluate(x=>{x.value="130";x.dispatchEvent(new Event("input",{bubbles:true}))});
+  await p.waitForFunction(()=>document.querySelector("#residual-plot")?.textContent?.includes("Residual: -10"),null,{timeout:5000});
   assert.match(await p.locator("#residual-plot").innerText(),/Residual: -10/);
  });
  await check("Titanic upload, negative fares, undo and categorical quiz",async()=>{
@@ -108,7 +109,7 @@ try{
   await m.locator("#menu").click();await m.locator('[data-route="lab"]').first().click();
   const w=await m.evaluate(()=>[document.documentElement.scrollWidth,window.innerWidth]);
   assert.ok(w[0]<=w[1]+3,"Horizontal overflow: "+JSON.stringify(w));
-  await m.screenshot({path:"/vercel/mltest/mobile-qa.png",fullPage:true});
+  await m.screenshot({path:process.env.ML_SCREENSHOT_PATH||"mobile-qa.png",fullPage:true});
   await mobile.close();
  });
  if(errors.length)failures.push({name:"Uncaught browser errors",message:errors.join("; ")});
