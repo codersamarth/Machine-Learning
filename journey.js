@@ -7,7 +7,7 @@ const byId=id=>J.lessons.find(x=>x.id===id);
 const all=J.lessons.concat(C.lessons);
 let stored={};try{stored=JSON.parse(localStorage.getItem("ml-journey-v1"))||{}}catch(e){}
 const S=Object.assign({reviewed:{},answers:{},bookmarks:[],recent:[],last:"z01",search:""},stored);
-const U={activeLine:0,traceLine:0,searchQuery:"",glossaryQuery:"",challenge:0,answer:null,slider:1};
+const U={activeLine:0,traceLine:0,searchQuery:"",glossaryQuery:"",challenge:0,answer:undefined,slider:1};
 function persist(){try{localStorage.setItem("ml-journey-v1",JSON.stringify(S))}catch(e){}}
 function toast(msg){const el=$("academy-toast");el.textContent=msg;el.style.display="block";clearTimeout(window.__jt);window.__jt=setTimeout(()=>{el.style.display="none"},2300)}
 function navigate(route){const next="#"+route;if(location.hash===next){render();return}location.hash=next}
@@ -121,7 +121,7 @@ function show(){let r=route(),label="Start from Zero",s;const parts=r.split("=")
 '<button class="academy-stage" data-action="glossary"><span class="stage-ico">📖</span><span><strong>Glossary</strong><small>Plain-English definitions</small></span></button>';
 $("academy-side").classList.remove("open");$("toggle-menu").setAttribute("aria-expanded","false");}
 function handle(act){const [action,arg]=act.split(":");
-if(action==="lesson"||action==="stage"){U.activeLine=0;navigate(act);window.scrollTo(0,0);return}
+if(action==="lesson"||action==="stage"){U.activeLine=0;navigate(action+"="+arg);window.scrollTo(0,0);return}
 if(["home","trace","glossary","search","saved","practice"].includes(action)){if(action==="practice"){U.answer=undefined;U.challenge=0}navigate(action);window.scrollTo(0,0);return}
 if(action==="go"){window.location.href=arg;return}
 if(action==="legacy"){window.location.href="/#lesson="+encodeURIComponent(arg);return}
