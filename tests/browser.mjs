@@ -150,7 +150,7 @@ try{
    assert.match(download.suggestedFilename(),/^r06-.*\.md$/);
    await p.locator("#video-link").fill("https://notebooklm.google.com/notebook/example");
    await p.locator("#save-video").click();
-   assert.ok(await p.locator("#detail-body a[href*="notebooklm.google.com/notebook/example"]').count());
+   assert.ok(await p.locator('#detail-body a[href*="notebooklm.google.com/notebook/example"]').count());
    await p.keyboard.press("Escape");
    await p.reload();
    await p.locator("#status-filter").selectOption("ready");
