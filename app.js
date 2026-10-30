@@ -144,7 +144,7 @@ function pageData(){var x=tableStats();return section("DATA FOUNDATIONS","Intera
 function downloadCSV(){var rows=[V.dataHeaders].concat(V.dataRows),txt=rows.map(function(row){return row.map(function(v){var x=String(v);if(/^\s*[=+@-]/.test(x))x="'"+x;return /[,"\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}).join(",")}).join("\n");var b=new Blob([txt],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="ml-playground-cleaned.csv";a.click();setTimeout(function(){URL.revokeObjectURL(u)},1000)}
 
 function render(){var page=V.page;var fn={home:pageHome,learn:pageLearn,regression:pageRegression,lesson:pageLesson,lab:pageLab,data:pageData,code:pageCode,python:pagePython,quiz:pageQuiz,notes:pageNotes,studio:pageStudio}[page]||pageHome;$("#main").innerHTML=fn();$("#xp").textContent=S.xp;$("#crumb").textContent="YOUR LEARNING SPACE / "+page.toUpperCase();document.querySelectorAll("[data-route]").forEach(function(b){if(b.classList.contains("nav"))b.classList.toggle("active",b.dataset.route===page)});document.body.classList.toggle("dark",S.theme==="dark")}
-function navigate(p){V.page=p;$("#sidebar").classList.remove("open");render();window.scrollTo({top:0,behavior:"smooth"})}
+function navigate(p){V.page=p;if(window.location)window.location.hash=p==="lesson"?"lesson="+encodeURIComponent(V.lesson):p;$("#sidebar").classList.remove("open");render();window.scrollTo({top:0,behavior:"smooth"})}
 function download(name,txt){var blob=new Blob([txt],{type:"application/json"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000)}
 function action(id){var parts=id.split(":"),type=parts[0],arg=parts.slice(1).join(":");if(type==="route"){navigate(arg);return}
 if(type==="reset-data"){resetData();return}
@@ -177,5 +177,8 @@ if(e.target.id==="decoder-input"){V.decoderInput=e.target.value}if(e.target.id==
 document.addEventListener("change",function(e){if(e.target.id==="csv-upload"){var file=e.target.files[0];if(!file)return;if(file.size>5000000){toast("CSV exceeds 5 MB upload limit");return}file.text().then(function(t){try{var d=parseCSV(t);V.dataUndo=null;V.dataName=file.name;V.dataHeaders=d.header;V.dataRows=d.rows;render();toast("Loaded "+d.rows.length+" rows locally")}catch(err){toast("Invalid CSV: "+err.message)}});return}if(e.target.id==="backup-file"){var file=e.target.files[0];if(!file)return;file.text().then(function(s){try{var x=JSON.parse(s);if(typeof x!=="object"||!x||!Array.isArray(x.custom)||!x.done||!x.notes||!x.answers)throw new Error("Unexpected backup format");S=Object.assign({},starter,x);save();render();toast("Imported your saved learning progress")}catch(err){toast("Could not import this backup")}})}});
 $("#theme").addEventListener("click",function(){S.theme=S.theme==="dark"?"light":"dark";save();render()});
 $("#menu").addEventListener("click",function(){$("#sidebar").classList.toggle("open")});
+function restoreRoute(){if(!window.location)return;var hash=window.location.hash.slice(1);if(hash.startsWith("lesson=")){var id=decodeURIComponent(hash.slice(7));if(record(id)){V.lesson=id;V.page="lesson"}}else if(["home","learn","regression","lab","code","python","quiz","notes","studio","data"].includes(hash)){V.page=hash}}
+if(window.addEventListener)window.addEventListener("hashchange",function(){restoreRoute();render()});
+restoreRoute();
 render();
 })();
