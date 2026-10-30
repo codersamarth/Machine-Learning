@@ -24,7 +24,9 @@ jobs:
       - name: Run browserless app smoke tests
         run: node tests/smoke.mjs
       - name: Verify all beginner lessons and code-line explanations
-        run: node tests/journey-smoke.mjs
+        run: |
+          node tests/journey-smoke.mjs
+          node tests/video-smoke.mjs
       - name: Verify all 71 NotebookLM source packets
         run: node tests/video-packets.mjs
 

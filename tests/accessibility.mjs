@@ -28,6 +28,8 @@ try{
  await scan("/#python");
  await scan("/cases.html");
  await scan("/ingest.html");
+ await scan("/video-library.html");
+ await scan("/video-library.html",async()=>{await page.locator('[data-topic="r01"]').first().click()});
  await scan("/journey.html");
  await scan("/journey.html#lesson=z01");
  await scan("/journey.html#trace");
@@ -48,7 +50,7 @@ try{
   console.log((issue.length?"FAIL ":"PASS ")+"mobile-320:"+route+" "+JSON.stringify(issue));
  }
  await phoneContext.close();
- console.log("A11Y SUMMARY: "+JSON.stringify({scans:18,violations:failures.length}));
+ console.log("A11Y SUMMARY: "+JSON.stringify({scans:20,violations:failures.length}));
  if(failures.length)process.exitCode=1;
 }catch(e){console.error(e);process.exitCode=1}
 finally{if(browser)await browser.close();if(server)server.kill("SIGTERM")}

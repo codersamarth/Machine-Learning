@@ -132,36 +132,35 @@ try{
   await p.waitForFunction(()=>document.querySelector("#py-output")?.textContent?.trim()==="12",null,{timeout:110000});
   assert.equal(await p.locator("#py-output").innerText(),"12");
  });
- await check("NotebookLM Video Studio: all topic prompts, files, links and mobile layout",async()=>{
-  await p.goto(base+"/video-studio.html?topic=z01");
-  assert.match(await p.title(),/Video Studio/);
-  assert.equal(await p.locator("#video-topic-count").innerText(),"71");
-  assert.match(await p.locator("#topic-detail h2").innerText(),/What exactly is code/);
-  assert.match(await p.locator("#video-prompt").inputValue(),/detailed EXPLAINER/);
-  await p.locator("#video-format").selectOption("short");
-  assert.match(await p.locator("#video-prompt").inputValue(),/SHORT/);
-  await p.locator("#topic-group").selectOption("regression");
-  assert.match(await p.locator("#topic-results").innerText(),/32 topics found/);
-  await p.locator('[data-select="r06"]').click();
-  assert.ok((await p.locator("#topic-detail h2").innerText()).length>4);
-  const dlPromise=p.waitForEvent("download");
-  await p.locator('[data-video-act="download-source"]').click();
-  const dl=await dlPromise;
-  assert.match(dl.suggestedFilename(),/^r06-.*\.md$/);
-  await p.locator("#video-url").fill("https://notebooklm.google.com/notebook/qa-test-video");
-  await p.locator("#video-link-form button[type=submit]").click();
-  assert.ok(await p.locator('a[href="https://notebooklm.google.com/notebook/qa-test-video"]').count());
-  await p.reload();
-  assert.ok(await p.locator('a[href="https://notebooklm.google.com/notebook/qa-test-video"]').count());
-  await p.locator('[data-video-act="remove-link"]').click();
-  assert.ok(!(await p.locator('a[href="https://notebooklm.google.com/notebook/qa-test-video"]').count()));
-  const mob=await browser.newContext({viewport:{width:360,height:740},isMobile:true,deviceScaleFactor:2});
-  const mp=await mob.newPage();
-  await mp.goto(base+"/video-studio.html?topic=r06");
-  const widths=await mp.evaluate(()=>({doc:document.documentElement.scrollWidth,viewport:window.innerWidth}));
-  assert.ok(widths.doc<=widths.viewport+3,"Mobile Video Studio horizontal overflow "+JSON.stringify(widths));
-  await mob.close();
+
+ await check("Video Academy source packs, video link persistence and lesson-specific prompts",async()=>{
+   await p.goto(base+"/video-library.html");
+   assert.match(await p.locator("h1").first().innerText(),/video academy/i);
+   assert.match(await p.locator("#status").innerText(),/71 topic source packs prepared/);
+   assert.equal(await p.locator(".video-topic").count(),71);
+   await p.locator("#group").selectOption("regression");
+   assert.equal(await p.locator(".video-topic").count(),32);
+   await p.locator("#group").selectOption("all");
+   await p.locator('[data-topic="r06"]').first().click();
+   assert.match(await p.locator("#detail-heading").innerText(),/Residuals/);
+   assert.match(await p.locator("#detail-body pre").innerText(),/ONE LINE AT A TIME/);
+   const downloadPromise=p.waitForEvent("download");
+   await p.locator("#download-source").click();
+   const download=await downloadPromise;
+   assert.match(download.suggestedFilename(),/^r06-.*\.md$/);
+   await p.locator("#video-link").fill("https://notebooklm.google.com/notebook/example");
+   await p.locator("#save-video").click();
+   assert.ok(await p.locator("#detail-body a[href*="notebooklm.google.com/notebook/example"]').count());
+   await p.keyboard.press("Escape");
+   await p.reload();
+   await p.locator("#status-filter").selectOption("ready");
+   assert.equal(await p.locator(".video-topic").count(),1);
+   await p.locator('[data-topic="r06"]').click();
+   assert.equal(await p.locator("#video-link").inputValue(),"https://notebooklm.google.com/notebook/example");
+   await p.locator("#remove-video").click();
+   await p.keyboard.press("Escape");
  });
+
  await check("Mobile navigation and viewport",async()=>{
   const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,deviceScaleFactor:2});
   const m=await mobile.newPage();await m.goto(base);await m.locator("#menu").click();
