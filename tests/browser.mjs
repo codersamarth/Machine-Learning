@@ -26,6 +26,7 @@ try{
   await p.locator('[data-act="lesson:r01"]').click();
   await p.locator('[data-note="r01"]').fill("Features are inputs; the label is the outcome.");
   await p.reload();assert.equal(await p.locator('[data-note="r01"]').inputValue(),"Features are inputs; the label is the outcome.");
+  await p.locator('[data-route="regression"]').first().click();
   await p.locator('[data-act="lesson:r06"]').click();
   assert.ok(await p.locator("#residual-plot svg").count());
   await p.locator("#residual-pred").evaluate(x=>{x.value="130";x.dispatchEvent(new Event("input",{bubbles:true}))});
@@ -69,6 +70,28 @@ try{
   await p.goto(base);await p.locator('[data-route="learn"]').first().click();
   await p.locator('[data-act="lecture:4"]').click();
   assert.match(await p.locator("#lecturearea").innerText(),/Decision trees for absolute beginners/);
+ });
+
+ await check("PDF extraction into review-only draft",async()=>{
+  const {PDFDocument,StandardFonts}=await import("pdf-lib");
+  const doc=await PDFDocument.create(),p1=doc.addPage([500,600]),font=await doc.embedFont(StandardFonts.Helvetica);
+  p1.drawText("Linear regression uses slope and intercept",{x:40,y:550,font,size:14});
+  const bytes=await doc.save();
+  await p.goto(base+"/ingest.html");
+  await p.locator("#file-input").setInputFiles({name:"lecture-sample.pdf",mimeType:"application/pdf",buffer:Buffer.from(bytes)});
+  await p.locator("#extract").click();
+  await p.waitForFunction(()=>document.querySelector("#source-preview")?.value?.includes("Linear regression"),null,{timeout:60000});
+  assert.match(await p.locator("#source-preview").inputValue(),/Linear regression/);
+ });
+ await check("PPTX text extraction into review-only draft",async()=>{
+  const {default:JSZip}=await import("jszip");
+  const zip=new JSZip();zip.file("ppt/slides/slide1.xml",'<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:spTree><a:t>Tree algorithms split data into groups</a:t></p:spTree></p:cSld></p:sld>');
+  const bytes=await zip.generateAsync({type:"nodebuffer"});
+  await p.goto(base+"/ingest.html");
+  await p.locator("#file-input").setInputFiles({name:"lecture-sample.pptx",mimeType:"application/vnd.openxmlformats-officedocument.presentationml.presentation",buffer:bytes});
+  await p.locator("#extract").click();
+  await p.waitForFunction(()=>document.querySelector("#source-preview")?.value?.includes("Tree algorithms"),null,{timeout:60000});
+  assert.match(await p.locator("#source-preview").inputValue(),/Tree algorithms/);
  });
  await check("Real browser Python (Pyodide)",async()=>{
   await p.goto(base);await p.locator('[data-route="python"]').first().click();
