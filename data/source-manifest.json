@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "publishedOn": "2026-10-30",
+  "releasePolicy": "Public static website: include only independently distributable learning examples and synthetic demonstrator data.",
+  "assets": [
+    {
+      "name": "Gelato_Times_Sales.csv",
+      "shape": [
+        13,
+        2
+      ],
+      "columns": [
+        "Times",
+        "Sales"
+      ],
+      "use": "Original course dataset bundled in curriculum.js and data/gelato.csv",
+      "distribution": "bundled small instructional values",
+      "status": "authentic"
+    },
+    {
+      "name": "Titanic.csv",
+      "shape": [
+        893,
+        11
+      ],
+      "columns": [
+        "PassengerId",
+        "Pclass",
+        "Name",
+        "Sex",
+        "Age",
+        "SibSp",
+        "Parch",
+        "Ticket",
+        "Fare",
+        "Cabin",
+        "Embarked"
+      ],
+      "use": "Lecture 2 preprocessing",
+      "distribution": "not published; student has source material; client-only import optional",
+      "status": "restricted_original"
+    },
+    {
+      "name": "synthetic Titanic practice",
+      "shape": [
+        13,
+        11
+      ],
+      "columns": [
+        "PassengerId",
+        "Pclass",
+        "Name",
+        "Sex",
+        "Age",
+        "SibSp",
+        "Parch",
+        "Ticket",
+        "Fare",
+        "Cabin",
+        "Embarked"
+      ],
+      "use": "Automatic no-upload Case Studio exercise",
+      "distribution": "bundled in cases.js",
+      "status": "synthetic_not_original"
+    },
+    {
+      "name": "Sarah_dataset.csv",
+      "shape": [
+        6000,
+        9
+      ],
+      "columns": [
+        "ID",
+        "Carat Weight",
+        "Cut",
+        "Color",
+        "Clarity",
+        "Polish",
+        "Symmetry",
+        "Report",
+        "Price"
+      ],
+      "use": "Diamond pricing case",
+      "distribution": "not published due to unknown case redistribution rights; optional browser-local student import",
+      "status": "restricted_original"
+    },
+    {
+      "name": "synthetic diamond practice",
+      "shape": [
+        70,
+        9
+      ],
+      "columns": [
+        "ID",
+        "Carat Weight",
+        "Cut",
+        "Color",
+        "Clarity",
+        "Polish",
+        "Symmetry",
+        "Report",
+        "Price"
+      ],
+      "use": "Automatic no-upload diamond comparisons",
+      "distribution": "generated deterministically in cases.js",
+      "status": "synthetic_not_original"
+    },
+    {
+      "name": "MIM_FT_rankings.csv",
+      "shape": [
+        100,
+        25
+      ],
+      "use": "Lecture 1 Python exercises",
+      "distribution": "not published; rankings may have third-party data rights",
+      "status": "restricted_original"
+    },
+    {
+      "name": "Lecture 1–3 PDF notebooks & copyrighted readings",
+      "use": "Teaching reference and source-scoped synthesis",
+      "distribution": "original PDF, case, readings and notebooks not redistributed",
+      "status": "referenced_not_bundled"
+    }
+  ],
+  "notes": [
+    "A previous mention of user-provided content does not necessarily license public redistribution.",
+    "Authentic Gelato fit uses all 13 source records, with slope about -0.471281 and intercept about 205.318735.",
+    "The line-by-line code state inspector is a mathematically correct guided walkthrough; actual Python execution remains in Python Dojo."
+  ],
+  "consent": "Do not add restricted files to a public repository without independently checking redistribution rights."
+}
