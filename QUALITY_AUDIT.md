@@ -44,3 +44,24 @@ Audited the public GitHub project's HTML/CSS/JavaScript, its full 15-lecture nav
 4. Add source-linked case-specific dashboards only when the data and rights permit.
 
 The project is an independent educational aid, not an official INSEAD publication or an accredited assessment.
+
+## Follow-up implementation and validation — 30 October 2026
+
+The original outstanding feature list above describes the **earlier audit state**. The following work has now been implemented.
+
+| Previously outstanding | Current state | Verification |
+|---|---|---|
+| Public production deployment | **Done:** [coding-five-woad.vercel.app](https://coding-five-woad.vercel.app), Vercel project `coding`, public HTTP 200 on homepage and the two extension pages | Vercel deployment status READY and HTTP checks |
+| Titanic case lab | **Done:** reversible invalid-fare cleaning, imputation demonstrations, feature engineering, and conceptual questions using user-supplied CSV | Chromium upload/undo/quiz exercise passed |
+| Diamond case lab | **Done:** interactive filtering, carat/price plot, comparable prices from uploaded listings, explanation of limits | Chromium upload/filter exercise passed |
+| PDF and PowerPoint text import | **Done:** browser-based extraction into human-reviewed, editable drafts; diagram/OCR limitations disclosed | Chromium synthetic PDF and PPTX extraction tests passed |
+| Jupyter notebook import | **Done:** Markdown/code cell extraction, preview and custom lesson saving | Chromium notebook-import and saved-lesson test passed |
+| Lesson refresh and deep links | **Done:** URL hash restores the selected lesson; notes persist in browser | Chromium reload and persistence test passed |
+| Python runtime validation | **Done for an actual exercise:** Pyodide executed and printed 12 on Chrome in the testing environment | Chromium test passed on both local and production origin |
+| Mobile browser testing | **Done for Chromium mobile emulation:** navigation and responsive regression layout, horizontal-overflow check | Chromium end-to-end test passed |
+| Accessibility | **Improved:** fixed muted text, small labels and diagram statistics after automated WCAG contrast scans | axe-core scans on static routes returned 0 WCAG 2.1 A/AA findings; dynamic-route fixes were committed and an ongoing CI scan added |
+| Automated end-to-end regression | **Done:** `tests/browser.mjs` and `tests/accessibility.mjs` added to GitHub Actions alongside numerical smoke checks | Nine browser workflows passed manually against production; GitHub CI added |
+
+**Still not complete (cannot be represented as finished):** exact course content for Lectures 4–15 without those lecture sources; a private cross-device account/database sync system; genuinely semantic grading of arbitrary Python code; production-grade valuation or survival models; real Safari/physical device/screen-reader coverage. Full actual source CSVs were checked locally for structure, but Chromium case-upload tests used small representative fixtures to avoid publishing restricted raw data.
+
+**Educational and privacy guardrail:** Uploaded source files are processed locally. A PDF/PPTX import is text extraction, not an AI-generated fact-checked course; users must rewrite, validate and save a draft themselves. Real course datasets are not placed in the public repository.
