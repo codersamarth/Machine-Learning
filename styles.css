@@ -27,7 +27,7 @@
  .mobile-dock button{background:none;color:var(--muted);border:0;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:55px;font-weight:800}
  .mobile-dock button span{font-size:21px;line-height:1.2}
  .mobile-dock button small{font-size:10px}
- .mobile-dock button.active{color:var(--purple);background:#efeaff}
+ .mobile-dock button.active{color:#4b2d92;background:#e9e1fb}
  .tabs{flex-wrap:nowrap;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:7px;scroll-snap-type:x proximity}
  .tabs .tab{flex:none;scroll-snap-align:start}
  .top .xp{padding:9px 10px}
