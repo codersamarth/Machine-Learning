@@ -1,63 +1,88 @@
 # ML Playground — INSEAD Machine Learning & Optimization
 
-A colourful, interactive, **regression-first** learning application, built to help a beginner understand the maths, business intuition and code behind machine learning. Not an official INSEAD website.
+A colourful, interactive beginner-first course companion. This is an **independent study project**, not an official INSEAD website.
 
-## What's included
+**Live website:** https://coding-five-woad.vercel.app
 
-- **40 lessons** grounded in Lectures 1–3 (8 on Python/ML/data foundations, 32 on regression concepts), including source cues and labelled supplementary material.
-- **Audited interactive visuals:** residuals, data splitting, leakage and Series-vs-DataFrame shape diagrams, with exact OLS polynomial fitting.\n- **Regression Academy:** features/labels, scatterplots, slope/intercept, residuals, least-squares loss, interpreting coefficients, DataFrame shapes, prediction, MAE/MSE/RMSE/R², train/validation/test, polynomial regression, bias/variance, regularization, cross-validation, time-series caveats, leakage and a complete workflow.
-- **Real-data regression laboratory** using the complete 13-row `Gelato_Times_Sales.csv`. Change polynomial degree or manual slope/intercept; the curve, prediction and training/holdout errors update live. The chronological three-point holdout is illustrative and too small for a reliable forecasting benchmark.
-- **Python Code Decoder:** eight annotated university-style snippets showing line-by-line behavior, input/output types and shapes, and common errors. A rule-based decoder also gives **heuristic, not guaranteed**, explanations of pasted Python.
-- **Python Dojo:** ten progressive editable exercises with genuine optional Pyodide Python execution. The scikit-learn example opens Google Colab because the lightweight browser runtime does not promise scikit-learn.
-- **CSV Explorer:** upload Titanic, Sarah/Diamond, FT rankings or future CSVs locally in the browser; inspect rows, missing values, duplicates and negative fares; export cleaned CSV and undo the last cleaning step. The other original uploaded CSV datasets are **not bundled into the Git repository**; users supply them through the uploader.
-- Quizzes with explanations, progress/XP, personal notes, manual custom lessons, a 15-lecture roadmap and JSON backup/import.
-- Responsive colourful design and light/dark mode.
+- [Dashboard and Regression Academy](https://coding-five-woad.vercel.app/)
+- [Titanic and Diamond Case Studio](https://coding-five-woad.vercel.app/cases)
+- [Lecture Import Studio](https://coding-five-woad.vercel.app/ingest)
 
-The lectures' copyrighted cases, PDF articles, classroom notebooks and handouts are **not** published here. Original teaching summaries and code examples cite the lecture or optional-reading category.
+## Available teaching material
 
-## Deploy to Vercel (recommended)
+The site contains **40 lessons** based on the materials supplied so far: 8 on Python, ML and preprocessing foundations, plus 32 on regression. It also has 8 annotated code walkthroughs and 10 progressive Python exercises. Lecture slots 4–15 are in the syllabus map, but are **not** populated with fabricated professor-specific material.
 
-1. Visit [vercel.com/new](https://vercel.com/new) and import [codersamarth/Machine-Learning](https://github.com/codersamarth/Machine-Learning).
-2. Set **Framework Preset** to **Other** (static site).
-3. Keep **Root Directory** as `./`, leave the **Build Command** empty, and set **Output Directory** to `.` (the repository root).
-4. Deploy. No environment variables, API keys, backend or npm packages are required for the core website.
-5. Further pushes to the default branch can automatically redeploy when Vercel Git integration is enabled.
+The regression academy covers observations, features, labels, shapes, plotting, slope, intercept, least squares, residuals, predictions, MAE/MSE/RMSE/R², validation and testing, polynomial regression, overfitting, leakage, regularization, pipelines and debugging. The live Gelato simulator uses the 13 records supplied in `Gelato_Times_Sales.csv`; numerical OLS fitting is checked against independent NumPy reference results.
 
-The `index.html` entry point loads `styles.css`, `curriculum.js` and `app.js`. `vercel.json` defines static site options.
+### New: real-data case labs
 
-## Run locally
+Open **Case Studio**, then select one of two hands-on modules:
+
+- **Titanic Data Detective:** Upload your own `Titanic.csv`. Inspect invalid negative fares, missing Age, missing Embarked and Cabin, duplicates and basic engineered features. Apply reversible cleaning steps and answer interpretation questions. The actual course CSV has **893 rows and 11 columns, with no Survived target**; the site does not pretend it can train a survival classifier from that file alone.
+- **Diamond Price Explorer:** Upload your own `Sarah_dataset.csv`. Examine the relationship between carat weight and listing price, filter by cut, colour, clarity and grading report, and explore actual comparable-price ranges. These are descriptive comparisons, **not** guaranteed valuations or the copyrighted case narrative.
+
+The full restricted course datasets, PDF handouts and copyrighted case materials are deliberately **not published** in this public repository. User-supplied CSV files are parsed locally in the browser.
+
+### New: Lecture Import Studio
+
+Upload a **PDF**, **PPTX**, **.ipynb**, Markdown or plain-text file and extract readable text client-side into page/slide/cell sections. Select a section, rewrite/check your explanation and save a custom lesson into the chosen lecture slot. **Human review is mandatory**; OCR, diagrams and equations may not be captured correctly. PDF extraction uses PDF.js and PowerPoint extraction uses JSZip from external CDNs.
+
+Custom lessons, notes, progress and quiz results use browser `localStorage`. Export and import JSON backups from the main site. Cloud account synchronisation is not implemented; avoid storing sensitive private data in notes on shared devices.
+
+### Python learning
+
+Python Dojo offers genuine interpreter execution through Pyodide (downloaded from CDN). The final sklearn exercise is intended for Google Colab. The rule-based Code Decoder is a teaching aid, **not** a semantic interpreter for arbitrary Python. Understanding unfamiliar code still requires tracing its input data, variables, object types, shapes and function definitions.
+
+## Deploy and run
+
+The GitHub repository is linked to the Vercel project **coding** under the **Bonjour** team. The production site above has been checked via HTTP and Chromium. Pushes to `main` automatically deploy; the core website is static and needs no production API keys.
+
+To run locally:
 
 ```bash
 git clone https://github.com/codersamarth/Machine-Learning.git
 cd Machine-Learning
-python -m http.server 8000
+python3 -m http.server 8000
 ```
 
-Visit **http://localhost:8000**.
+Visit http://localhost:8000.
 
-## Check the site
+## Test the website
+
+Syntax and mathematical checks:
 
 ```bash
 node --check app.js
 node --check curriculum.js
+node --check cases.js
+node --check ingest.js
 node tests/smoke.mjs
 ```
 
-GitHub Actions runs these checks on pushes and pull requests. The checks validate page rendering and reference Gelato regression calculations, not every browser-specific behavior.
+For full browser and accessibility checks, install testing dependencies **locally only**:
 
-## How to learn to read any regression notebook
+```bash
+npm install --no-save --no-package-lock playwright@1.64.1 pdf-lib@1.17.1 jszip@3.10.1 @axe-core/playwright@4.11.1
+npx playwright install --with-deps --only-shell chromium
+node tests/browser.mjs
+node tests/accessibility.mjs
+```
 
-For each line, ask: **What came in? What object or shape comes out? What was learned or transformed? What data were used? Why does it matter for the model or its evaluation?**
+To test an already deployed version instead:
 
-Use **Regression Academy → Code Decoder → Python Dojo → Live Lab → Exam Arena** as a progressive learning path. The generic code decoder is not an interpreter or semantic validator for arbitrary Python programs.
+```bash
+ML_BASE_URL=https://coding-five-woad.vercel.app node tests/browser.mjs
+ML_BASE_URL=https://coding-five-woad.vercel.app node tests/accessibility.mjs
+```
 
-## Expand the course
+GitHub Actions runs syntax, numerical, real Chromium and automated WCAG checks on each push and pull request.
 
-The course roadmap contains 15 lecture slots from the provided syllabus. Lectures 4–15 deliberately have no invented official lecture content. Choose **My Notes → Content Studio** to add manual lessons as materials arrive. Notes, custom lessons and progress stay in your browser using `localStorage`; export backups to transfer them. There is no account sync or automated document ingestion yet.
+## Important boundaries
 
-## Limitations
+- Course-specific lectures 4–15 need their original slides/notebooks before comprehensive lessons can be authored accurately.
+- Source import is text extraction and a review-first editor, **not** automatic production of complete academic lessons.
+- This is a single-user local-first site; reliable private cross-device synchronisation requires authentication and a secure backend.
+- The Python Dojo is not a general-purpose server-side Python execution service or a fully semantic code grader.
+- Chromium desktop/mobile emulation and automatic WCAG checks do not replace physical-device, Safari or screen-reader testing.
 
-- Browser Python is downloaded from Pyodide CDN; offline Python execution is unavailable until the runtime has been cached.
-- Scikit-learn may be unavailable within the browser Python runtime; use Google Colab for those activities.
-- There is no server-side account system, automated grading of arbitrary pasted code, automatic lecture PDF parsing, or persistent cloud storage.
-- Held-out performance from three seasonal Gelato observations is a **teaching illustration** and must not be presented as a reliable production forecast.
+See [QUALITY_AUDIT.md](QUALITY_AUDIT.md) for tested functionality and remaining limitations.
