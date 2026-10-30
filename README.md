@@ -4,12 +4,12 @@ A colourful, interactive, **regression-first** learning application, built to he
 
 ## What's included
 
-- **36 lessons** grounded in Lectures 1–3 (8 on Python/ML/data foundations, 28 on regression concepts), including source cues and labelled supplementary material.
-- **Regression Academy:** features/labels, scatterplots, slope/intercept, residuals, least-squares loss, interpreting coefficients, DataFrame shapes, prediction, MAE/MSE/RMSE/R², train/validation/test, polynomial regression, bias/variance, regularization, cross-validation, time-series caveats, leakage and a complete workflow.
+- **40 lessons** grounded in Lectures 1–3 (8 on Python/ML/data foundations, 32 on regression concepts), including source cues and labelled supplementary material.
+- **Audited interactive visuals:** residuals, data splitting, leakage and Series-vs-DataFrame shape diagrams, with exact OLS polynomial fitting.\n- **Regression Academy:** features/labels, scatterplots, slope/intercept, residuals, least-squares loss, interpreting coefficients, DataFrame shapes, prediction, MAE/MSE/RMSE/R², train/validation/test, polynomial regression, bias/variance, regularization, cross-validation, time-series caveats, leakage and a complete workflow.
 - **Real-data regression laboratory** using the complete 13-row `Gelato_Times_Sales.csv`. Change polynomial degree or manual slope/intercept; the curve, prediction and training/holdout errors update live. The chronological three-point holdout is illustrative and too small for a reliable forecasting benchmark.
 - **Python Code Decoder:** eight annotated university-style snippets showing line-by-line behavior, input/output types and shapes, and common errors. A rule-based decoder also gives **heuristic, not guaranteed**, explanations of pasted Python.
 - **Python Dojo:** ten progressive editable exercises with genuine optional Pyodide Python execution. The scikit-learn example opens Google Colab because the lightweight browser runtime does not promise scikit-learn.
-- **CSV Explorer:** upload Titanic, Sarah/Diamond, FT rankings or future CSVs locally in the browser; inspect rows, missing values, duplicates and negative fares; export cleaned CSV. The other original uploaded CSV datasets are **not bundled into the Git repository**; users supply them through the uploader.
+- **CSV Explorer:** upload Titanic, Sarah/Diamond, FT rankings or future CSVs locally in the browser; inspect rows, missing values, duplicates and negative fares; export cleaned CSV and undo the last cleaning step. The other original uploaded CSV datasets are **not bundled into the Git repository**; users supply them through the uploader.
 - Quizzes with explanations, progress/XP, personal notes, manual custom lessons, a 15-lecture roadmap and JSON backup/import.
 - Responsive colourful design and light/dark mode.
 

@@ -29,7 +29,7 @@ assert.equal(context.window.ML_CURRICULUM.gelato.length, 13);
 assert.ok(context.window.ML_CURRICULUM.lessons.filter(l => l.lecture === 3).length >= 25);
 assert.equal(context.window.ML_CURRICULUM.walks.length, 8);
 
-const source = app.replace(/\}\)\(\);\s*$/, "window.__test={fitPolynomial, modelAt, errorStats,parseCSV,tableStats,V,C,render,pageHome,pageLearn,pageRegression,pageLesson,pageLab,pageCode,pagePython,pageData,pageQuiz,pageNotes,pageStudio};})();");
+const source = app.replace(/\}\)\(\);\s*$/, "window.__test={fitPolynomial, modelAt, errorStats,parseCSV,tableStats,V,C,render,pageHome,pageLearn,pageRegression,pageLesson,pageLab,pageCode,pagePython,pageData,pageQuiz,pageNotes,pageStudio,residualGraphic,splitGraphic,action};})();");
 assert.ok(source.includes("window.__test="), "Could not expose app testing functions");
 vm.runInNewContext(source, context);
 const t = context.window.__test;
@@ -50,7 +50,7 @@ for(let d=1;d<=8;d++){
   assert.ok(Math.abs(stats.rmse-expected[d-1][0])<0.001, "Degree "+d+" must match independent NumPy OLS training RMSE");
   assert.ok(Math.abs(predictor(100)-expected[d-1][1])<0.001, "Degree "+d+" prediction must match NumPy");
 }
-assert.equal(t.C.lessons.length,36);
+assert.equal(t.C.lessons.length,40);
 for (const lesson of t.C.lessons) {
   assert.ok(lesson.title && lesson.simple && lesson.university && lesson.pitfall && lesson.source, "Missing instructional content");
   assert.ok(lesson.choices.length >= 3, "Every lesson should include an interactive check");
@@ -68,4 +68,16 @@ const parsed = t.parseCSV(csv);
 assert.equal(parsed.rows.length, 2);
 assert.equal(parsed.rows[0][0], "Smith, Ada");
 assert.equal(parsed.rows[1][0], 'Test "Quoted"');
+assert.throws(()=>t.parseCSV('Name,Age\n"unclosed,12'),/Unclosed/);
+assert.throws(()=>t.parseCSV('Name,Age\nAda,25,extra'),/CSV row/);
+assert.equal(t.parseCSV('\uFEFFName,Age\nAda,25\n').rows.length,1);
+assert.ok(t.residualGraphic(100).includes("Residual: 20"));
+assert.ok(t.splitGraphic(60).includes("Test 20%"));
+for(const lesson of t.C.lessons){
+  t.V.lesson=lesson.id;
+  const page=t.pageLesson();
+  assert.ok(page.includes(lesson.title),"Lesson page must render its topic");
+  assert.ok(page.includes("MICRO QUIZ"),"Lesson should include active recall");
+}
+
 console.log("ML Playground smoke tests passed");
