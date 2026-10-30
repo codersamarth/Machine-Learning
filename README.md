@@ -4,6 +4,12 @@ A colourful, interactive beginner-first course companion. This is an **independe
 
 **Live website:** https://coding-five-woad.vercel.app
 
+**New beginner-first path:** [Start from Zero →](https://coding-five-woad.vercel.app/journey)
+
+The guided path teaches **31 additional micro-lessons** (10 absolute basics, 13 Python reading, 8 data foundations), then connects to 32 regression lessons, the real Gelato notebook inspector and independent code-reading challenges. It includes a searchable glossary and course search, breadcrumbs, previous/next, bookmarks, recent lessons and refresh-safe links. Step-through states and regression coefficients are calculated from genuine Gelato observations; they are explanatory traces, not claims of running arbitrary Python.
+
+**No-upload start:** Authentic Gelato sales points are bundled. The Titanic and Diamond Case Studio launches with clearly labelled synthetic demonstration records, so students can practise immediately. Original class-specific CSVs remain optional and are processed locally when selected; restricted materials are not redistributed in this public site. See [source manifest](data/source-manifest.json) and [implementation report](IMPROVEMENT_REPORT.md).
+
 - [Dashboard and Regression Academy](https://coding-five-woad.vercel.app/)
 - [Titanic and Diamond Case Studio](https://coding-five-woad.vercel.app/cases)
 - [Lecture Import Studio](https://coding-five-woad.vercel.app/ingest)
@@ -18,8 +24,8 @@ The regression academy covers observations, features, labels, shapes, plotting, 
 
 Open **Case Studio**, then select one of two hands-on modules:
 
-- **Titanic Data Detective:** Upload your own `Titanic.csv`. Inspect invalid negative fares, missing Age, missing Embarked and Cabin, duplicates and basic engineered features. Apply reversible cleaning steps and answer interpretation questions. The actual course CSV has **893 rows and 11 columns, with no Survived target**; the site does not pretend it can train a survival classifier from that file alone.
-- **Diamond Price Explorer:** Upload your own `Sarah_dataset.csv`. Examine the relationship between carat weight and listing price, filter by cut, colour, clarity and grading report, and explore actual comparable-price ranges. These are descriptive comparisons, **not** guaranteed valuations or the copyrighted case narrative.
+- **Titanic Data Detective:** A synthetic beginner practice file is preloaded; optionally upload your own `Titanic.csv`. Inspect invalid negative fares, missing Age, missing Embarked and Cabin, duplicates and basic engineered features. Apply reversible cleaning steps and answer interpretation questions. The actual course CSV has **893 rows and 11 columns, with no Survived target**; the site does not pretend it can train a survival classifier from that file alone.
+- **Diamond Price Explorer:** A synthetic beginner practice file is preloaded; optionally upload your own `Sarah_dataset.csv`. Examine the relationship between carat weight and listing price, filter by cut, colour, clarity and grading report, and explore actual comparable-price ranges. These are descriptive comparisons, **not** guaranteed valuations or the copyrighted case narrative.
 
 The full restricted course datasets, PDF handouts and copyrighted case materials are deliberately **not published** in this public repository. User-supplied CSV files are parsed locally in the browser.
 
