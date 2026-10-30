@@ -1,6 +1,40 @@
 (function(){
 "use strict";
 var state={caseName:"titanic",columns:[],rows:[],filename:"",history:[],quiz:{},filters:{},weight:1.1,tolerance:.2};
+
+function demoCase(){
+ state.history=[];state.quiz={};state.filters={};state.demo=true;
+ if(state.caseName==="titanic"){
+  state.columns=["PassengerId","Pclass","Name","Sex","Age","SibSp","Parch","Ticket","Fare","Cabin","Embarked"];
+  state.rows=[
+   [1,3,"Demo Passenger A","female",22,0,0,"D001",7.25,"","S"],
+   [2,1,"Demo Passenger B","male",38,1,0,"D002",71.28,"C14","C"],
+   [3,2,"Demo Passenger C","female","",0,0,"D003",12.5,"","S"],
+   [4,3,"Demo Passenger D","male",34,0,0,"D004",-12,"","Q"],
+   [5,1,"Demo Passenger E","female",27,1,1,"D005",99,"B11","S"],
+   [6,2,"Demo Passenger F","male",17,0,0,"D006",13,"",""],
+   [7,3,"Demo Passenger G","female",30,0,1,"D007",8.05,"","S"],
+   [8,3,"Demo Passenger H","male","",0,0,"D008",7.89,"","Q"],
+   [9,1,"Demo Passenger I","female",49,0,0,"D009",77,"C60","C"],
+   [10,2,"Demo Passenger J","male",42,1,0,"D010",18,"","S"],
+   [11,3,"Demo Passenger K","female",24,0,0,"D011",7.75,"","S"],
+   [12,1,"Demo Passenger L","male",61,0,0,"D012",105.15,"A20","S"]
+  ].map(row=>Object.fromEntries(state.columns.map((c,i)=>[c,String(row[i])])));
+  state.rows.push({...state.rows[0]});
+  state.filename="Titanic — 13-row synthetic demonstration";
+ }else{
+  state.columns=["ID","Carat Weight","Cut","Color","Clarity","Polish","Symmetry","Report","Price"];
+  const cuts=["Excellent","Very Good","Good","Fair"],colors=["D","F","G","H","I"],clarities=["VVS1","VS1","VS2","SI1","SI2"],reports=["GIA","AGSL"];
+  state.rows=Array.from({length:70},(_,i)=>{
+   const carat=.65+((i*23)%44)/20,cut=cuts[i%cuts.length],color=colors[(i*7)%colors.length],clarity=clarities[(i*3)%clarities.length];
+   const grade=1+.07*(4-i%4)+.035*(5-((i*7)%5))+.05*(5-((i*3)%5));
+   const price=Math.round((1600*Math.pow(carat,1.58)*grade+((i*17)%19-9)*25)/10)*10;
+   return {ID:"DEMO-"+String(i+1).padStart(3,"0"),"Carat Weight":carat.toFixed(2),Cut:cut,Color:color,Clarity:clarity,Polish:["EX","VG","G"][i%3],Symmetry:["EX","VG","G"][(i+1)%3],Report:reports[i%2],Price:String(price)};
+  });
+  state.filename="Diamond — 70-row synthetic demonstration";
+ }
+}
+
 var expected={titanic:["PassengerId","Pclass","Name","Sex","Age","SibSp","Parch","Ticket","Fare","Cabin","Embarked"],diamond:["ID","Carat Weight","Cut","Color","Clarity","Polish","Symmetry","Report","Price"]};
 var $=id=>document.getElementById(id);
 var esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
@@ -39,7 +73,7 @@ function choiceOptions(key,prompt,choices,correct,why){var v=state.quiz[key];ret
 function summaryTable(cols,rows,max){return '<div class="scroll"><table class="studytable"><thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join("")+'</tr></thead><tbody>'+rows.slice(0,max).map(row=>'<tr>'+cols.map(c=>'<td'+(row[c]===""?' style="background:#fff4d7;color:#765629"':"")+'>'+esc(row[c]||"(missing)")+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>'}
 function titanicPage(){
  var a=stats(),base='<div class="statgrid">'+[["Observations",a.rows],["Missing ages",a.missingAge],["Missing cabins",a.missingCabin],["Negative fares",a.invalidFare]].map(p=>'<div class="metric"><small>'+p[0]+'</small><strong>'+p[1]+'</strong></div>').join("")+'</div>';
- base+='<div class="grid g2"><div class="card"><div class="eyebrow">MISSION 1 · INVESTIGATE</div><h2>Find the corrupted fare</h2><p>The actual Lecture 2 Titanic file contains a negative fare in its final row. Inspect the dataset, then remove this invalid observation without dropping ordinary outliers.</p><div class="callout warn">Current negative fares: <b>'+a.invalidFare+'</b></div><div class="row"><button class="btn" data-action="remove-fare" '+(!a.invalidFare?"disabled":"")+'>Remove negative-fare rows</button><button class="btn alt" data-action="undo" '+(!state.history.length?"disabled":"")+'>↶ Undo</button></div></div>'+
+ base+='<div class="grid g2"><div class="card"><div class="eyebrow">MISSION 1 · INVESTIGATE</div><h2>Find the corrupted fare</h2><p>The demo contains a deliberately invalid fare for practice; the actual course CSV also has an anomalous fare. Inspect the dataset, then remove this invalid observation without dropping ordinary outliers.</p><div class="callout warn">Current negative fares: <b>'+a.invalidFare+'</b></div><div class="row"><button class="btn" data-action="remove-fare" '+(!a.invalidFare?"disabled":"")+'>Remove negative-fare rows</button><button class="btn alt" data-action="undo" '+(!state.history.length?"disabled":"")+'>↶ Undo</button></div></div>'+
  '<div class="card"><div class="eyebrow">MISSION 2 · MISSING VALUES</div><h2>Clean unknown information</h2><p><b>Age:</b> '+a.missingAge+' missing. You can fill with the median of currently observed ages; in real modeling, fit the imputer on the training split only.</p><p><b>Embarked:</b> '+a.missingEmbarked+' missing. Replace with the most common observed port.</p><p><b>Cabin:</b> '+a.missingCabin+' missing. Too sparse for a naive fill; consider dropping it for this practice.</p><div class="row"><button class="btn alt small" data-action="fill-age" '+(!a.missingAge?"disabled":"")+'>Fill Age median</button><button class="btn alt small" data-action="fill-embarked" '+(!a.missingEmbarked?"disabled":"")+'>Fill Embarked mode</button><button class="btn alt small" data-action="drop-cabin" '+(!state.columns.includes("Cabin")?"disabled":"")+'>Drop Cabin column</button></div></div></div>';
  base+='<div class="card"><div class="eyebrow">MISSION 3 · FEATURE ENGINEERING</div><h2>Create meaningful new features</h2><p>FamilySize = SibSp + Parch + 1. A derived column helps describe how many family members travelled together (including the passenger). You can also remove exact duplicate rows after investigating them.</p><div class="row"><button class="btn" data-action="family" '+(state.columns.includes("FamilySize")?"disabled":"")+'>Create FamilySize feature</button><button class="btn alt" data-action="dedupe" '+(!a.duplicates?"disabled":"")+'>Remove '+a.duplicates+' exact duplicate rows</button><button class="btn alt" data-action="export">Download cleaned CSV</button></div><div class="scroll" style="margin-top:16px">'+summaryTable(state.columns.slice(0,11),state.rows,7)+'</div></div>';
  base+='<div class="card"><div class="eyebrow">CONCEPT CHECKS · EXPLAIN WHY</div><h2>Can you make trustworthy decisions?</h2>'+
@@ -64,7 +98,7 @@ function diamondPage(){
  var rows=diamondComparables(),n=rows.length,prices=rows.map(r=>num(r.Price)).filter(Number.isFinite),med=median(prices),min=Math.min(...prices),max=Math.max(...prices),ppc=median(rows.map(r=>num(r.Price)/num(r["Carat Weight"])).filter(Number.isFinite));
  var total=state.rows.length;
  return '<div class="statgrid">'+[["All listings",total],["Comparable listings",n],["Median comparable price",Number.isFinite(med)?"$"+Math.round(med).toLocaleString():"—"],["Median $/carat",Number.isFinite(ppc)?"$"+Math.round(ppc).toLocaleString():"—"]].map(p=>'<div class="metric"><small>'+p[0]+'</small><strong>'+p[1]+'</strong></div>').join("")+'</div>'+
- '<div class="contentcols"><div><div class="card"><div class="eyebrow">REAL MARKET DATA · INTERACTIVE SCATTER</div><h2>Price vs carat weight</h2>'+scatterDiamond(state.rows.filter(r=>Object.entries(state.filters).every(([k,v])=>!v||r[k]===v)))+'<p class="point-note">Displays up to 500 rows after filters; calculations use all eligible listings. Prices and characteristics come only from your uploaded CSV.</p></div>'+
+ '<div class="contentcols"><div><div class="card"><div class="eyebrow">'+(state.demo?'SYNTHETIC DEMONSTRATION':'USER-SUPPLIED COURSE DATA')+' · INTERACTIVE SCATTER</div><h2>Price vs carat weight</h2>'+scatterDiamond(state.rows.filter(r=>Object.entries(state.filters).every(([k,v])=>!v||r[k]===v)))+'<p class="point-note">Displays up to 500 rows after filters; calculations use all eligible listings. Prices and characteristics come from the current table; demonstration values are synthetic.</p></div>'+
  '<div class="card"><div class="eyebrow">COMPARABLE SALES</div><h2>Find diamonds with similar characteristics</h2><p>A descriptive comparison—not a validated price prediction model. Use this to see how carat, cut, colour, clarity and certification affect the observed range. Avoid interpreting this as intrinsic value.</p>'+
  '<label class="label" for="weight">Target carat: <span id="wt">'+state.weight.toFixed(2)+'</span></label><input id="weight" type="range" min=".75" max="2.9" step=".05" value="'+state.weight+'">'+
  '<label class="label" for="tol">± carat tolerance: <span id="tl">'+state.tolerance.toFixed(2)+'</span></label><input id="tol" type="range" min=".05" max=".50" step=".05" value="'+state.tolerance+'">'+
@@ -84,6 +118,10 @@ function render(){
  $("case-desc").textContent=state.caseName==="titanic"?"Lect. 2: invalid fares, missing values, useful features.":"Supplementary case lab: explore real diamond characteristics and price.";
  $("source-note").textContent=state.caseName==="titanic"?"Lecture 2 introduces data cleansing, corrupt fares, missing age/cabin values and categorical variables using the 893-row Titanic file. This CSV has no Survived label.":"The uploaded diamond dataset contains columns ID, Carat Weight, Cut, Color, Clarity, Polish, Symmetry, Report and Price. Analysis here is exploratory and does not reproduce the copyrighted Darden case narrative.";
  $("case-workspace").innerHTML=state.rows.length?(state.caseName==="titanic"?titanicPage():diamondPage()):emptyWorkspace();
+ if(state.demo){
+  $("case-desc").textContent="Ready to practise immediately with synthetic example rows. Uploading an original course file is optional.";
+  $("upload-status").textContent="SYNTHETIC DEMO: "+state.filename+". These are made-up practice examples, NOT the actual course records.";
+ }
 }
 function upload(file){
  if(!file)return;if(file.size>6e6){status("File exceeds 6 MB upload limit.");return}
@@ -92,14 +130,14 @@ function upload(file){
   var parsed=parseCSV(txt),missing=expected[state.caseName].filter(c=>!parsed.cols.includes(c));
   if(missing.length)throw Error("Missing expected columns: "+missing.join(", "));
   if(!parsed.rows.length)throw Error("No data rows");
-  state.columns=parsed.cols;state.rows=parsed.rows;state.filename=file.name;state.history=[];state.quiz={};state.filters={};
+  state.columns=parsed.cols;state.rows=parsed.rows;state.filename=file.name;state.history=[];state.quiz={};state.filters={};state.demo=false;
   status("Loaded "+parsed.rows.length.toLocaleString()+" rows from "+file.name+" locally. Data are not sent anywhere.");render();
  }catch(e){status("Could not use this file: "+e.message)}
  });
 }
 $("case-upload").addEventListener("change",e=>upload(e.target.files[0]));
 document.addEventListener("click",e=>{
- var tab=e.target.closest("[data-case]");if(tab){state.caseName=tab.dataset.case;state.columns=[];state.rows=[];state.filters={};state.history=[];state.quiz={};$("case-upload").value="";status("Choose the matching source CSV for this case.");render();return}
+ var tab=e.target.closest("[data-case]");if(tab){state.caseName=tab.dataset.case;state.columns=[];state.rows=[];state.filters={};state.history=[];state.quiz={};$("case-upload").value="";demoCase();render();return}
  var q=e.target.closest("[data-quiz]");if(q){state.quiz[q.dataset.quiz]=Number(q.dataset.value);render();return}
  var action=e.target.closest("[data-action]");if(!action)return;var a=action.dataset.action;
  if(a==="undo"){if(state.history.length){var previous=state.history.pop();state.rows=previous.rows;state.columns=previous.columns;render();status("Undid previous cleaning action.")}}
@@ -119,6 +157,6 @@ document.addEventListener("input",e=>{
 document.addEventListener("change",e=>{
  if(e.target.id==="weight"||e.target.id==="tol"){render();return}if(e.target.dataset.filter){state.filters[e.target.dataset.filter]=e.target.value;render()}
 });
-window.ML_CASE_TESTS={parseCSV,median,invalidFares,duplicates,stats,diamondComparables};
-render();
+window.ML_CASE_TESTS={parseCSV,median,invalidFares,duplicates,stats,diamondComparables,demoCase};
+demoCase();render();
 })();
