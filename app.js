@@ -197,7 +197,7 @@ $("#theme").addEventListener("click",function(){S.theme=S.theme==="dark"?"light"
 $("#menu").addEventListener("click",function(){setMobileMenu(!$("#sidebar").classList.contains("open"))});
 $("#drawer-backdrop").addEventListener("click",function(){setMobileMenu(false);$("#menu").focus()});
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("#sidebar").classList.contains("open")){setMobileMenu(false);$("#menu").focus()}});
-window.addEventListener("resize",syncMobileMenu);syncMobileMenu();
+if(window.addEventListener)window.addEventListener("resize",syncMobileMenu);if(window.matchMedia)syncMobileMenu();
 function restoreRoute(){if(!window.location)return;var hash=window.location.hash.slice(1);if(hash.startsWith("lesson=")){var id=decodeURIComponent(hash.slice(7));if(record(id)){V.lesson=id;V.page="lesson"}}else if(["home","learn","regression","lab","code","python","quiz","notes","studio","data"].includes(hash)){V.page=hash}}
 if(window.addEventListener)window.addEventListener("hashchange",function(){var oldPage=V.page,oldLesson=V.lesson;restoreRoute();if(V.page!==oldPage||V.lesson!==oldLesson)render()});
 restoreRoute();
