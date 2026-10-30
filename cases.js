@@ -30,8 +30,8 @@ function median(arr){var a=arr.filter(Number.isFinite).sort((x,y)=>x-y),n=a.leng
 function countMissing(field){return state.rows.filter(r=>!String(r[field]??"").trim()||/^nan$/i.test(r[field])).length}
 function invalidFares(rows){return rows.filter(r=>Number.isFinite(num(r.Fare))&&num(r.Fare)<0).length}
 function duplicates(rows){var seen=new Set(),n=0;rows.forEach(r=>{var k=JSON.stringify(state.columns.map(c=>r[c]));if(seen.has(k))n++;seen.add(k)});return n}
-function stats(){return {rows:state.rows.length,missingAge:countMissing("Age"),missingCabin:countMissing("Cabin"),missingEmbarked:countMissing("Embarked"),invalidFare:invalidFares(state.rows),duplicates:duplicates(state.rows)}}
-function preserve(){state.history.push(state.rows.map(r=>({...r})));if(state.history.length>10)state.history.shift()}
+function stats(){return {rows:state.rows.length,missingAge:countMissing("Age"),missingCabin:state.columns.includes("Cabin")?countMissing("Cabin"):0,missingEmbarked:countMissing("Embarked"),invalidFare:invalidFares(state.rows),duplicates:duplicates(state.rows)}}
+function preserve(){state.history.push({rows:state.rows.map(r=>({...r})),columns:state.columns.slice()});if(state.history.length>10)state.history.shift()}
 function mutate(operation){preserve();var before=state.rows.length;operation();render();status("Change applied. "+(before-state.rows.length)+" rows removed; press Undo to restore.")}
 function status(s){$("upload-status").textContent=s}
 function download(name,body){var url=URL.createObjectURL(new Blob([body],{type:"text/csv;charset=utf-8"})),a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),500)}
@@ -99,10 +99,10 @@ function upload(file){
 }
 $("case-upload").addEventListener("change",e=>upload(e.target.files[0]));
 document.addEventListener("click",e=>{
- var tab=e.target.closest("[data-case]");if(tab){state.caseName=tab.dataset.case;state.columns=[];state.rows=[];state.filters={};state.history=[];state.quiz={};status("Choose the matching source CSV for this case.");render();return}
+ var tab=e.target.closest("[data-case]");if(tab){state.caseName=tab.dataset.case;state.columns=[];state.rows=[];state.filters={};state.history=[];state.quiz={};$("case-upload").value="";status("Choose the matching source CSV for this case.");render();return}
  var q=e.target.closest("[data-quiz]");if(q){state.quiz[q.dataset.quiz]=Number(q.dataset.value);render();return}
  var action=e.target.closest("[data-action]");if(!action)return;var a=action.dataset.action;
- if(a==="undo"){if(state.history.length){state.rows=state.history.pop();render();status("Undid previous cleaning action.")}}
+ if(a==="undo"){if(state.history.length){var previous=state.history.pop();state.rows=previous.rows;state.columns=previous.columns;render();status("Undid previous cleaning action.")}}
  else if(a==="remove-fare")mutate(()=>{state.rows=state.rows.filter(r=>!(Number.isFinite(num(r.Fare))&&num(r.Fare)<0))});
  else if(a==="fill-age")mutate(()=>{var m=median(state.rows.map(r=>num(r.Age)));if(!Number.isFinite(m))return;state.rows.forEach(r=>{if(!String(r.Age).trim())r.Age=String(m)})});
  else if(a==="fill-embarked")mutate(()=>{var counts={};state.rows.forEach(r=>{if(r.Embarked)counts[r.Embarked]=(counts[r.Embarked]||0)+1});var mode=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];if(mode)state.rows.forEach(r=>{if(!r.Embarked)r.Embarked=mode})});
@@ -113,11 +113,11 @@ document.addEventListener("click",e=>{
  else if(a==="export")download(state.caseName+"-processed.csv",toCSV());
 });
 document.addEventListener("input",e=>{
- if(e.target.id==="weight"){state.weight=Number(e.target.value);$("wt").textContent=state.weight.toFixed(2);render()}
- else if(e.target.id==="tol"){state.tolerance=Number(e.target.value);$("tl").textContent=state.tolerance.toFixed(2);render()}
+ if(e.target.id==="weight"){state.weight=Number(e.target.value);$("wt").textContent=state.weight.toFixed(2)}
+ else if(e.target.id==="tol"){state.tolerance=Number(e.target.value);$("tl").textContent=state.tolerance.toFixed(2)}
 });
 document.addEventListener("change",e=>{
- if(e.target.dataset.filter){state.filters[e.target.dataset.filter]=e.target.value;render()}
+ if(e.target.id==="weight"||e.target.id==="tol"){render();return}if(e.target.dataset.filter){state.filters[e.target.dataset.filter]=e.target.value;render()}
 });
 window.ML_CASE_TESTS={parseCSV,median,invalidFares,duplicates,stats,diamondComparables};
 render();
