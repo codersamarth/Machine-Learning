@@ -21,3 +21,13 @@
  .academy-head-actions{margin-left:auto}
  body.academy-menu-open{overflow:hidden}
 }
+
+/* Tablet-width code trace: keep preformatted lines inside their own scroll region. */
+.academy-main,.academy-card,.academy-lesson-layout,.academy-block{min-width:0}
+.academy-code{display:block;width:100%;max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain}
+.academy-code-line{width:max-content;min-width:100%}
+@media(min-width:751px) and (max-width:1000px){
+ .academy-lesson-layout{grid-template-columns:minmax(0,1fr)}
+ .academy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .academy-main{max-width:100%;overflow-x:clip}
+}
