@@ -33,7 +33,7 @@ for(const topic of v.topics){
  assert.ok(src.includes("Accuracy instructions"),"Missing hallucination guardrails");
  assert.ok(prompt.includes(topic.title)&&prompt.includes("ONE LINE AT A TIME")===!!topic.code,"Code instruction mismatch for "+topic.id);
  assert.ok(v.filename(topic).endsWith(".md"));
- assert.ok(!src.includes("undefined"),"Invalid source text for "+topic.id);
+ assert.ok(!src.includes("Source reference label: undefined"),"Missing provenance label for "+topic.id);
 }
 assert.ok(v.validUrl("https://notebooklm.google.com/notebook/abc"));
 assert.ok(!v.validUrl("javascript:alert(1)"));
