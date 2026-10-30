@@ -65,3 +65,18 @@ The original outstanding feature list above describes the **earlier audit state*
 **Still not complete (cannot be represented as finished):** exact course content for Lectures 4–15 without those lecture sources; a private cross-device account/database sync system; genuinely semantic grading of arbitrary Python code; production-grade valuation or survival models; real Safari/physical device/screen-reader coverage. Full actual source CSVs were checked locally for structure, but Chromium case-upload tests used small representative fixtures to avoid publishing restricted raw data.
 
 **Educational and privacy guardrail:** Uploaded source files are processed locally. A PDF/PPTX import is text extraction, not an AI-generated fact-checked course; users must rewrite, validate and save a draft themselves. Real course datasets are not placed in the public repository.
+
+
+## Final mobile release verification — 30 October 2026
+
+This follow-up completed additional real Chromium and accessibility testing. It supersedes outdated "not tested" entries above.
+
+- **Mobile UX fixes:** The main and guided learning drawers are scrollable at short phone heights, with backdrop dismissal, Escape-key close, keyboard-safe focus control, accessible expanded/collapsed state and scroll locking. The main site also has a five-action mobile bottom dock, with larger touch targets and safe-area padding.
+- **Responsive regression suite:** \`tests/mobile-deep.mjs\` tested **78 route/viewport combinations** at 320, 360, 390, 430, 768 and 1024 CSS pixels, covering dashboard, lessons, regression lab, data, code, Python, quizzes, notes, case studio, source importer and guided journey. It found **zero unintentional page-width overflow** after the fixes. Horizontally scrollable tab strips remain intentional.
+- **Mobile menu behaviour:** The test also checked scrollable main/academy drawers, the main mobile quick dock, Escape-key dismissal and menu expanded-state controls.
+- **Accessibility regression:** 18 axe-core WCAG 2.1 A/AA scans now run across desktop and 320-pixel mobile routes. An initial mobile run found low-contrast active navigation text, an unlabeled pasted-code editor and a keyboard-inaccessible scrollable table; these were corrected. The subsequent GitHub Actions browser/accessibility run passed.
+- **Production:** The existing linked public production alias [coding-five-woad.vercel.app](https://coding-five-woad.vercel.app/) returned HTTP 200 after this work and tracks the latest GitHub \`main\` commit. A separate protected Vercel project was also created, but the public alias is the recommended end-user URL.
+- **Tests executed in Chrome:** Playwright validated actual Pyodide Python output, Titanic and diamond workflows, notebook/PDF/PPTX imports and note persistence. The source-less later lecture slots remain appropriately labelled.
+- **Outstanding limitations:** Physical iOS/Safari and Android devices, manual screen-reader usability, backend/cloud user-account sync, general-purpose semantic interpretation of arbitrary Python, and authorised course-specific content for lectures 4–15 are **not** represented as completed.
+
+GitHub Actions records and rerunnable tests are the source of truth for test status. No automated scan guarantees universal accessibility or usability.

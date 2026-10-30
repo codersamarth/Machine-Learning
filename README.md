@@ -35,6 +35,10 @@ Upload a **PDF**, **PPTX**, **.ipynb**, Markdown or plain-text file and extract 
 
 Custom lessons, notes, progress and quiz results use browser `localStorage`. Export and import JSON backups from the main site. Cloud account synchronisation is not implemented; avoid storing sensitive private data in notes on shared devices.
 
+### Mobile UX
+
+The site includes a scrollable mobile menu, an accessible close backdrop, Escape-key dismissal and a five-button bottom dock for one-handed navigation. A dedicated Playwright suite checks 78 mobile/tablet route and viewport combinations; keyboard and WCAG scans run in CI. The optional horizontally swipeable topic chips are intentionally scrollable within their own row.
+
 ### Python learning
 
 Python Dojo offers genuine interpreter execution through Pyodide (downloaded from CDN). The final sklearn exercise is intended for Google Colab. The rule-based Code Decoder is a teaching aid, **not** a semantic interpreter for arbitrary Python. Understanding unfamiliar code still requires tracing its input data, variables, object types, shapes and function definitions.
@@ -72,6 +76,7 @@ npm install --no-save --no-package-lock playwright@1.64.1 pdf-lib@1.17.1 jszip@3
 npx playwright install --with-deps --only-shell chromium
 node tests/browser.mjs
 node tests/accessibility.mjs
+node tests/mobile-deep.mjs
 ```
 
 To test an already deployed version instead:

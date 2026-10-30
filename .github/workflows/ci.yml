@@ -44,3 +44,5 @@ jobs:
         run: node tests/browser.mjs
       - name: Run WCAG accessibility regression checks
         run: node tests/accessibility.mjs
+      - name: Check 320–1024px responsive layouts and mobile navigation
+        run: node tests/mobile-deep.mjs
