@@ -19,7 +19,7 @@ try{
       const metrics=await page.evaluate(()=>{
         const doc=document.documentElement,root=document.body;
         const overflow=doc.scrollWidth-innerWidth;
-        const offscreen=[...document.querySelectorAll("main button,main input,main textarea,main select,.extmain button,.extmain input,.academy-main button")].filter(el=>{const r=el.getBoundingClientRect();if(r.width===0||r.height===0)return false;const cs=getComputedStyle(el);if(cs.visibility==="hidden"||cs.display==="none")return false;return r.right>innerWidth+3||r.left < -3}).slice(0,5).map(el=>({tag:el.tagName,label:(el.textContent||el.ariaLabel||"").slice(0,28),outer:el.getBoundingClientRect().right}));
+        const offscreen=[...document.querySelectorAll("main button,main input,main textarea,main select,.extmain button,.extmain input,.academy-main button")].filter(el=>{const r=el.getBoundingClientRect();if(r.width===0||r.height===0)return false;const cs=getComputedStyle(el);if(cs.visibility==="hidden"||cs.display==="none")return false;const tab=el.closest(".tabs");if(tab&&tab.scrollWidth>tab.clientWidth+2)return false;return r.right>innerWidth+3||r.left < -3}).slice(0,5).map(el=>({tag:el.tagName,label:(el.textContent||el.ariaLabel||"").slice(0,28),outer:el.getBoundingClientRect().right}));
         return {overflow,viewport:innerWidth,docWidth:doc.scrollWidth,buttonsOutside:offscreen};
       });
       if(metrics.overflow>3)fails.push({width,route,kind:"horizontal-scroll",metrics});
@@ -34,7 +34,18 @@ try{
       if(drawer.scrollHeight>drawer.clientHeight+3 && !["auto","scroll"].includes(drawer.overflowY))fails.push({width,kind:"drawer-is-not-scrollable",drawer});
       const bt=await page.locator("#menu").evaluate(el=>el.getBoundingClientRect().height);
       if(bt<43)fails.push({width,kind:"menu-touch-target",height:bt});
+      if(await page.locator("#menu").getAttribute("aria-expanded")!=="true")fails.push({width,kind:"drawer-expanded-state"});
+      await page.keyboard.press("Escape");
+      if(await page.locator("#menu").getAttribute("aria-expanded")!=="false")fails.push({width,kind:"drawer-Escape-close"});
+      await page.locator('.mobile-dock [data-route="lab"]').click();
+      if(!/Gelato Regression Laboratory/.test(await page.locator("h1").first().innerText()))fails.push({width,kind:"quick-nav-broken"});
       await page.screenshot({path:"qa-mobile-"+width+".png",fullPage:true});
+      await page.goto(base+"/journey.html");
+      await page.locator("#toggle-menu").click();
+      const a=await page.locator("#academy-side").evaluate(el=>({visible:el.classList.contains("open"),scrollable:el.scrollHeight>el.clientHeight?getComputedStyle(el).overflowY==="auto":true}));
+      if(!a.visible||!a.scrollable)fails.push({width,kind:"journey-drawer-failure",drawer:a});
+      await page.keyboard.press("Escape");
+      if(await page.locator("#toggle-menu").getAttribute("aria-expanded")!=="false")fails.push({width,kind:"journey-menu-Escape-close"});
     }
     await context.close();
   }
