@@ -143,8 +143,26 @@ function resetData(){V.dataUndo=null;V.dataName="Gelato_Times_Sales.csv";V.dataH
 function pageData(){var x=tableStats();return section("DATA FOUNDATIONS","Interactive Dataset Explorer 🧹","Load the complete Gelato dataset or upload the Titanic, Diamond or FT rankings CSV from your computer. CSV files are examined locally in the browser.")+'<div class="card"><div class="row between"><h2>'+h(V.dataName)+'</h2><label class="btn" for="csv-upload">↑ Upload CSV</label><input id="csv-upload" type="file" accept=".csv" style="display:none"></div><div class="grid g4" style="margin:20px 0"><div class="metric"><small>ROWS</small><strong>'+V.dataRows.length+'</strong></div><div class="metric"><small>COLUMNS</small><strong>'+V.dataHeaders.length+'</strong></div><div class="metric"><small>MISSING CELLS</small><strong>'+x.missing+'</strong></div><div class="metric"><small>DUPLICATES</small><strong>'+x.duplicates+'</strong></div></div><div class="row">'+btn("Clean negative fares and exact duplicates","clean-data",true)+btn("Export cleaned CSV","download-data",true)+(V.dataUndo?btn("↶ Undo cleaning","undo-clean",true):"")+btn("Restore Gelato","reset-data",true)+'</div><div class="scroll" style="margin-top:20px"><table class="studytable"><thead><tr>'+V.dataHeaders.map(function(x){return '<th>'+h(x)+'</th>'}).join('')+'</tr></thead><tbody>'+V.dataRows.slice(0,9).map(function(row){return '<tr>'+row.map(function(v){return '<td>'+h(v===""?"(missing)":v)+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div><p class="tiny">First 9 rows shown. Negative Fare detected: '+x.badFare+'. The original Titanic exercise includes an intentionally corrupted row. Always investigate anomalies before deleting them.</p></div>'+'<div class="grid g2" style="margin-top:16px"><div class="card"><h3>What do the columns mean?</h3><p>A row is an observation. A feature is a useful input. A label is the target you hope to predict. A CSV file is not automatically ready for a model.</p>'+btn("Study data cleaning","lesson:m5",true)+'</div><div class="card"><h3>Which fixes are appropriate?</h3><p>Investigate missing values, impossible numbers, duplicates and categorical encodings. Fit any learnt transformations on training data to protect held-out evaluation.</p>'+btn("Study target leakage","lesson:r22",true)+'</div></div>'}
 function downloadCSV(){var rows=[V.dataHeaders].concat(V.dataRows),txt=rows.map(function(row){return row.map(function(v){var x=String(v);if(/^\s*[=+@-]/.test(x))x="'"+x;return /[,"\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}).join(",")}).join("\n");var b=new Blob([txt],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download="ml-playground-cleaned.csv";a.click();setTimeout(function(){URL.revokeObjectURL(u)},1000)}
 
-function render(){var page=V.page;var fn={home:pageHome,learn:pageLearn,regression:pageRegression,lesson:pageLesson,lab:pageLab,data:pageData,code:pageCode,python:pagePython,quiz:pageQuiz,notes:pageNotes,studio:pageStudio}[page]||pageHome;$("#main").innerHTML=fn();$("#xp").textContent=S.xp;$("#crumb").textContent="YOUR LEARNING SPACE / "+page.toUpperCase();document.querySelectorAll("[data-route]").forEach(function(b){if(b.classList.contains("nav"))b.classList.toggle("active",b.dataset.route===page)});document.body.classList.toggle("dark",S.theme==="dark")}
-function navigate(p){V.page=p;if(window.location)window.location.hash=p==="lesson"?"lesson="+encodeURIComponent(V.lesson):p;$("#sidebar").classList.remove("open");render();window.scrollTo({top:0,behavior:"smooth"})}
+
+function setMobileMenu(open){
+ var small=window.matchMedia("(max-width:760px)").matches;
+ open=Boolean(open&&small);
+ var drawer=$("#sidebar"),trigger=$("#menu"),backdrop=$("#drawer-backdrop");
+ drawer.classList.toggle("open",open);
+ trigger.setAttribute("aria-expanded",String(open));
+ trigger.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");
+ backdrop.classList.toggle("open",open);
+ document.body.classList.toggle("menu-open",open);
+ drawer.inert=small&&!open;
+}
+function syncMobileMenu(){if(!window.matchMedia("(max-width:760px)").matches)setMobileMenu(false);else if(!$("#sidebar").classList.contains("open"))$("#sidebar").inert=true}
+
+function render(){var page=V.page;var fn={home:pageHome,learn:pageLearn,regression:pageRegression,lesson:pageLesson,lab:pageLab,data:pageData,code:pageCode,python:pagePython,quiz:pageQuiz,notes:pageNotes,studio:pageStudio}[page]||pageHome;$("#main").innerHTML=fn();$("#xp").textContent=S.xp;$("#crumb").textContent="YOUR LEARNING SPACE / "+page.toUpperCase();document.querySelectorAll("[data-route]").forEach(function(b){if(b.classList.contains("nav"))b.classList.toggle("active",b.dataset.route===page)});document.body.classList.toggle("dark",S.theme==="dark");
+document.querySelectorAll(".mobile-dock [data-route]").forEach(function(b){
+ var active=b.dataset.route===page;b.classList.toggle("active",active);
+ if(active)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")
+})}
+function navigate(p){V.page=p;if(window.location)window.location.hash=p==="lesson"?"lesson="+encodeURIComponent(V.lesson):p;setMobileMenu(false);render();window.scrollTo({top:0,behavior:"smooth"})}
 function download(name,txt){var blob=new Blob([txt],{type:"application/json"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000)}
 function action(id){var parts=id.split(":"),type=parts[0],arg=parts.slice(1).join(":");if(type==="route"){navigate(arg);return}
 if(type==="reset-data"){resetData();return}
@@ -176,7 +194,10 @@ if(e.target.id==="split-train"&&$("#split-preview"))$("#split-preview").innerHTM
 if(e.target.id==="decoder-input"){V.decoderInput=e.target.value}if(e.target.id==="py-editor"){V.pyCode=e.target.value}});
 document.addEventListener("change",function(e){if(e.target.id==="csv-upload"){var file=e.target.files[0];if(!file)return;if(file.size>5000000){toast("CSV exceeds 5 MB upload limit");return}file.text().then(function(t){try{var d=parseCSV(t);V.dataUndo=null;V.dataName=file.name;V.dataHeaders=d.header;V.dataRows=d.rows;render();toast("Loaded "+d.rows.length+" rows locally")}catch(err){toast("Invalid CSV: "+err.message)}});return}if(e.target.id==="backup-file"){var file=e.target.files[0];if(!file)return;file.text().then(function(s){try{var x=JSON.parse(s);if(typeof x!=="object"||!x||!Array.isArray(x.custom)||!x.done||!x.notes||!x.answers)throw new Error("Unexpected backup format");S=Object.assign({},starter,x);save();render();toast("Imported your saved learning progress")}catch(err){toast("Could not import this backup")}})}});
 $("#theme").addEventListener("click",function(){S.theme=S.theme==="dark"?"light":"dark";save();render()});
-$("#menu").addEventListener("click",function(){$("#sidebar").classList.toggle("open")});
+$("#menu").addEventListener("click",function(){setMobileMenu(!$("#sidebar").classList.contains("open"))});
+$("#drawer-backdrop").addEventListener("click",function(){setMobileMenu(false);$("#menu").focus()});
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&$("#sidebar").classList.contains("open")){setMobileMenu(false);$("#menu").focus()}});
+window.addEventListener("resize",syncMobileMenu);syncMobileMenu();
 function restoreRoute(){if(!window.location)return;var hash=window.location.hash.slice(1);if(hash.startsWith("lesson=")){var id=decodeURIComponent(hash.slice(7));if(record(id)){V.lesson=id;V.page="lesson"}}else if(["home","learn","regression","lab","code","python","quiz","notes","studio","data"].includes(hash)){V.page=hash}}
 if(window.addEventListener)window.addEventListener("hashchange",function(){var oldPage=V.page,oldLesson=V.lesson;restoreRoute();if(V.page!==oldPage||V.lesson!==oldLesson)render()});
 restoreRoute();

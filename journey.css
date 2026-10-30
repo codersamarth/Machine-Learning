@@ -6,3 +6,18 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
 .academy-stage.current small{color:#4b3b83}
+
+/* Reachable mobile academy menu and safe-area-aware touch targets. */
+.academy-backdrop{display:none}
+@media(max-width:750px){
+ .academy-side{height:100dvh;overflow-y:auto;overscroll-behavior:contain;z-index:40;width:min(300px,88vw);max-width:88vw;visibility:hidden;padding-bottom:calc(30px + env(safe-area-inset-bottom,0px))}
+ .academy-side.open{visibility:visible}
+ .academy-backdrop.open{display:block;position:fixed;inset:0;z-index:39;background:rgba(19,22,40,.48);border:0}
+ .academy-stage,.academy-icon,.academy-quiz-opt,.academy-topic,.academy-search-result{min-height:44px}
+ .academy-main,.academy-card,.academy-lesson-layout{min-width:0}
+ .academy-card,.academy-code,.academy-trace-table{max-width:100%}
+ .academy-top{gap:8px}
+ .academy-breadcrumb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+ .academy-head-actions{margin-left:auto}
+ body.academy-menu-open{overflow:hidden}
+}

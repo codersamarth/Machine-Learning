@@ -4,6 +4,18 @@ const J=window.ML_JOURNEY,C=window.ML_CURRICULUM;
 const $=id=>document.getElementById(id);
 const clean=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const byId=id=>J.lessons.find(x=>x.id===id);
+
+function setAcademyMenu(open){
+ var small=window.matchMedia("(max-width:750px)").matches;
+ open=Boolean(open&&small);
+ $("academy-side").classList.toggle("open",open);
+ $("academy-backdrop").classList.toggle("open",open);
+ $("toggle-menu").setAttribute("aria-expanded",String(open));
+ $("toggle-menu").setAttribute("aria-label",open?"Close learning menu":"Open learning menu");
+ document.body.classList.toggle("academy-menu-open",open);
+ $("academy-side").inert=small&&!open;
+}
+
 const all=J.lessons.concat(C.lessons);
 let stored={};try{stored=JSON.parse(localStorage.getItem("ml-journey-v1"))||{}}catch(e){}
 const S=Object.assign({reviewed:{},answers:{},bookmarks:[],recent:[],last:"z01",search:""},stored);
@@ -120,7 +132,7 @@ function practice(){let i=U.challenge%challenges.length,q=challenges[i],answer=U
 function show(){let r=route();lastRenderedRoute=r;let label="Start from Zero",s;const parts=r.split("=");if(r==="home")s=home();else if(r.startsWith("lesson=")&&byId(parts[1])){s=lessonPage(parts[1]);label=byId(parts[1]).title}else if(r.startsWith("stage=")&&getStage(parts[1])){s=stageView(parts[1]);label=getStage(parts[1]).title}else if(r==="trace"){s=tracePage();label="Real code trace"}else if(r==="glossary"){s=glossary();label="Glossary"}else if(r==="search"){s=search();label="Search"}else if(r==="saved"){s=saved();label="Bookmarks"}else if(r==="practice"){s=practice();label="Independent practice"}else s=home();$("journey-content").innerHTML=s;$("academy-breadcrumb").textContent="YOUR PATH / "+label.toUpperCase();$("academy-progress").textContent=reviewedCount()+" reviewed";$("stage-menu").innerHTML=J.stages.map(st=>'<button class="academy-stage '+(r==="stage="+st.id||(r.startsWith("lesson=")&&byId(parts[1])?.stage===st.id)?"current":"")+'" data-action="stage:'+st.id+'"><span class="stage-ico">'+st.icon+'</span><span><strong>'+clean(st.title)+'</strong><small>'+clean(st.sub)+'</small></span></button>').join("")+
 '<button class="academy-stage" data-action="search"><span class="stage-ico">🔎</span><span><strong>Search everything</strong><small>All course concepts</small></span></button>'+
 '<button class="academy-stage" data-action="glossary"><span class="stage-ico">📖</span><span><strong>Glossary</strong><small>Plain-English definitions</small></span></button>';
-$("academy-side").classList.remove("open");$("toggle-menu").setAttribute("aria-expanded","false");}
+setAcademyMenu(false);}
 function handle(act){const [action,arg]=act.split(":");
 if(action==="lesson"||action==="stage"){U.activeLine=0;navigate(action+"="+arg);window.scrollTo(0,0);return}
 if(["home","trace","glossary","search","saved","practice"].includes(action)){if(action==="practice"){U.answer=undefined;U.challenge=0}navigate(action);window.scrollTo(0,0);return}
@@ -145,7 +157,11 @@ if(e.target.id==="count-slider"){U.slider=Number(e.target.value);const l=byId(ro
 });
 $("search-toggle").addEventListener("click",()=>navigate("search"));
 $("bookmarks-toggle").addEventListener("click",()=>navigate("saved"));
-$("toggle-menu").addEventListener("click",()=>{let e=$("academy-side");e.classList.toggle("open");$("toggle-menu").setAttribute("aria-expanded",e.classList.contains("open")?"true":"false")});
+$("toggle-menu").addEventListener("click",()=>setAcademyMenu(!$("academy-side").classList.contains("open")));
+$("academy-backdrop").addEventListener("click",()=>{setAcademyMenu(false);$("toggle-menu").focus()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("academy-side").classList.contains("open")){setAcademyMenu(false);$("toggle-menu").focus()}});
+window.addEventListener("resize",()=>{if(!window.matchMedia("(max-width:750px)").matches)setAcademyMenu(false);else if(!$("academy-side").classList.contains("open"))$("academy-side").inert=true});
+setAcademyMenu(false);
 window.addEventListener("hashchange",()=>{if(route()!==lastRenderedRoute){show();window.scrollTo(0,0)}});
 show();
 })();
