@@ -46,6 +46,8 @@ jobs:
         run: npx playwright install --with-deps --only-shell chromium
       - name: Run desktop, mobile, Python and lecture-import and Video Studio browser tests
         run: node tests/browser.mjs
+      - name: Exercise NotebookLM Video Studio in desktop/mobile Chromium
+        run: node tests/video-studio-browser.mjs
       - name: Run WCAG accessibility regression checks
         run: node tests/accessibility.mjs
       - name: Check 320–1024px responsive layouts and mobile navigation
