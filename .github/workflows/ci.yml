@@ -19,5 +19,26 @@ jobs:
         run: |
           node --check app.js
           node --check curriculum.js
+          node --check cases.js
+          node --check ingest.js
       - name: Run browserless app smoke tests
         run: node tests/smoke.mjs
+
+  browser-and-accessibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install testing dependencies (not needed by the deployed website)
+        run: npm install --no-save --no-package-lock playwright@1.64.1 pdf-lib@1.17.1 jszip@3.10.1 @axe-core/playwright@4.11.1
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps --only-shell chromium
+      - name: Run desktop, mobile, Python and lecture-import browser tests
+        run: node tests/browser.mjs
+      - name: Run WCAG accessibility regression checks
+        run: node tests/accessibility.mjs
