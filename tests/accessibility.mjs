@@ -13,6 +13,8 @@ try{
  const page=await ctx.newPage();
  async function scan(path,setup){
   await page.goto(base+path);
+  if(path.includes("cases"))assert.ok(await page.locator("#case-upload").count(),"Case Studio did not load");
+  if(path.includes("ingest"))assert.ok(await page.locator("#file-input").count(),"Lecture Import Studio did not load");
   if(setup)await setup();
   const report=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
   const issue=report.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target.join(" ")).slice(0,5)}));
@@ -23,9 +25,9 @@ try{
  await scan("/#lesson=r14");
  await scan("/#lesson=r09");
  await scan("/#python");
- await scan("/cases");
- await scan("/ingest");
- await scan("/cases",async()=>{
+ await scan("/cases.html");
+ await scan("/ingest.html");
+ await scan("/cases.html",async()=>{
   const csv=["PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked","1,third,Ada,female,22,0,0,T1,8,,S","2,first,Ben,male,,1,0,T2,55,C1,"].join("\n");
   await page.locator("#case-upload").setInputFiles({name:"Titanic.csv",mimeType:"text/csv",buffer:Buffer.from(csv)});
   await page.waitForFunction(()=>document.querySelector("#case-workspace")?.textContent?.includes("MISSION 1"));
