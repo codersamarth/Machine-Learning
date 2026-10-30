@@ -97,3 +97,11 @@ GitHub Actions runs syntax, numerical, real Chromium and automated WCAG checks o
 - Chromium desktop/mobile emulation and automatic WCAG checks do not replace physical-device, Safari or screen-reader testing.
 
 See [QUALITY_AUDIT.md](QUALITY_AUDIT.md) for tested functionality and remaining limitations.
+
+## Video Overview preparation for every topic
+
+A [mobile-friendly Video Studio](video-studio.html) now prepares **71 separate topic source packets** (31 beginning/Python/data micro-lessons and 40 course lessons). Each packet uses only existing public ML Playground explanations and the source labels already attached to that lesson. Per-topic steering prompts are available in both full Explainer and short revision formats. Use **Download all 71 topic packets** to obtain a ZIP with Markdown source files and prompts, or download/copy any individual topic packet.
+
+**Videos are not generated or hosted in this repo.** Open [NotebookLM](https://notebooklm.google.com/), add one topic's Markdown file as a source, choose Studio → Video Overview → Explainer, and paste the provided prompt. After human review, save a permitted HTTPS share link in Video Studio. Links saved in the website are browser-local; to publish video links for all visitors, add verified share URLs to `video-map.js` and commit them. Check notebook sharing permissions and rights to source material first.
+
+`tests/video-packets.mjs` checks all 71 topic packs. AI video narration may contain inaccuracies; it is not a substitute for official lecture materials.
