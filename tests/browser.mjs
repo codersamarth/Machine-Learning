@@ -50,6 +50,7 @@ try{
   await p.locator("#tab-diamond").click();
   const csv=["ID,Carat Weight,Cut,Color,Clarity,Polish,Symmetry,Report,Price","1,1.10,Ideal,H,SI1,VG,EX,GIA,5169","2,0.83,Ideal,H,VS1,ID,ID,AGSL,3470","3,0.85,Good,F,SI1,EX,EX,GIA,3183","4,1.18,Ideal,H,SI1,VG,VG,GIA,5900","5,2.1,Fair,D,VVS1,EX,EX,GIA,21000"].join("\n");
   await p.locator("#case-upload").setInputFiles({name:"Sarah_dataset.csv",mimeType:"text/csv",buffer:Buffer.from(csv)});
+  await p.waitForFunction(()=>document.querySelector("#case-workspace")?.textContent?.includes("All listings"),null,{timeout:10000});
   assert.match(await p.locator("#case-workspace").innerText(),/All listings/);
   await p.locator('[data-filter="Cut"]').selectOption("Ideal");
   assert.ok(await p.locator("svg[aria-label*=diamond]").count());
