@@ -37,7 +37,18 @@ try{
   await page.locator("#case-upload").setInputFiles({name:"Titanic.csv",mimeType:"text/csv",buffer:Buffer.from(csv)});
   await page.waitForFunction(()=>document.querySelector("#case-workspace")?.textContent?.includes("MISSION 1"));
  });
- console.log("A11Y SUMMARY: "+JSON.stringify({scans:11,violations:failures.length}));
+
+ const phoneContext=await browser.newContext({viewport:{width:320,height:700},isMobile:true,deviceScaleFactor:2,touchscreen:true});
+ const phone=await phoneContext.newPage();
+ for(const route of ["/","/#regression","/#lab","/#code","/cases.html","/ingest.html","/journey.html"]){
+  await phone.goto(base+route);
+  const report=await new AxeBuilder({page:phone}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
+  const issue=report.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target.join(" ")).slice(0,5)}));
+  if(issue.length)failures.push({path:"mobile-320:"+route,issue});
+  console.log((issue.length?"FAIL ":"PASS ")+"mobile-320:"+route+" "+JSON.stringify(issue));
+ }
+ await phoneContext.close();
+ console.log("A11Y SUMMARY: "+JSON.stringify({scans:18,violations:failures.length}));
  if(failures.length)process.exitCode=1;
 }catch(e){console.error(e);process.exitCode=1}
 finally{if(browser)await browser.close();if(server)server.kill("SIGTERM")}
