@@ -4,3 +4,5 @@
 @media(max-width:1000px){.academy-lesson-layout{grid-template-columns:1fr}.academy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:750px){.academy-side{position:fixed;left:0;top:0;transform:translateX(-105%);box-shadow:0 15px 45px #1114}.academy-side.open{transform:translateX(0)}#toggle-menu{display:inline-block}.academy-grid,.academy-grid.two,.academy-gloss{grid-template-columns:1fr}.academy-hero{grid-template-columns:1fr}.academy-hero .big{display:none}.academy-progress{display:none}.academy-top{padding:0 15px}.academy-main{padding:23px 14px 70px}.academy-lesson-head h1{font-size:30px}.academy-card{padding:18px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+.academy-stage.current small{color:#4b3b83}
