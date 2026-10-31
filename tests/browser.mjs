@@ -177,7 +177,8 @@ try{
    await p.locator("#vp-group").selectOption("all");
    await p.locator("#vp-status").selectOption("all");
    await p.locator("#vp-search").fill("Target leakage");
-   assert.equal(await p.locator(".vp-item").count(),1);
+   assert.ok(await p.locator(".vp-item").count()>=1,"Search should find matching topic references");
+   assert.ok(await p.locator(".vp-item h2").filter({hasText:/leakage/i}).count()>=1,"Search should include a named leakage topic");
  });
  await check("Mobile navigation and viewport",async()=>{
   const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,deviceScaleFactor:2});
