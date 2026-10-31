@@ -35,8 +35,8 @@ function renderDetail(){
  '<div class="eyebrow">'+h(t.section)+' · TOPIC '+h(t.id)+'</div>'+
  '<h2>'+h(t.title)+'</h2>'+
  '<span class="video-status '+(link?"ready":"")+'">'+(link?"✓ Video link available":"Video not generated yet")+'</span>'+
- '<p>'+h(t.kind==="journey"?t.lesson.plain:t.lesson.simple)+'</p>'+
- (link?'<div class="video-actions"><a class="video-action" target="_blank" rel="noopener noreferrer" href="'+h(link)+'">▶ Watch the saved video ↗</a></div>':'')+
+ '<p>'+h(t.kind==="journey"?t.lesson.plain:t.lesson.simple)+'</p>'+(t.lesson.teaching?'<div class="video-guide-steps"><b>Understand the idea</b><p>'+h(t.lesson.teaching.example)+'</p><ol>'+t.lesson.teaching.steps.map(function(x){return '<li>'+h(x)+'</li>'}).join('')+'</ol></div>':'')+
+ (link?(/\\.(mp4|webm)(?:[?#]|$)/i.test(link)?'<div class="video-actions"><video controls playsinline preload="metadata" src="'+h(link)+'" style="display:block;width:100%;aspect-ratio:16/9;background:#13243b;border-radius:16px">Your browser cannot play the video.</video></div><p class="video-note">Watch here in ML Playground; no external website required.</p>':'<div class="video-actions"><a class="video-action" target="_blank" rel="noopener noreferrer" href="'+h(link)+'">Open external notebook link ↗</a></div>'):'')+
  '<div class="video-actions">'+
  '<button type="button" class="video-action" data-video-act="download-source">↓ Download source (.md)</button>'+
  '<button type="button" class="video-action alt" data-video-act="copy-source">Copy source</button>'+
@@ -109,4 +109,5 @@ $("topic-detail").addEventListener("submit",function(e){
  try{localStorage.setItem(key,JSON.stringify(localLinks));render();toast("Video link saved on this browser")}catch(e){toast("Storage unavailable; the link was not saved")}
 });
 render();
+if(window.addEventListener)window.addEventListener("ml-videos-ready",render);
 })();

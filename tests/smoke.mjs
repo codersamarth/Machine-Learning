@@ -25,6 +25,8 @@ const context = {
 };
 vm.runInNewContext(curriculum, context);
 vm.runInNewContext(readFileSync("lecture-plan.js","utf8"), context);
+vm.runInNewContext(readFileSync("teaching-guides.js","utf8"), context);
+vm.runInNewContext(readFileSync("video-map.js","utf8"), context);
 assert.equal(context.window.ML_CURRICULUM.lectures.length, 15);
 assert.equal(context.window.ML_CURRICULUM.gelato.length, 13);
 assert.ok(context.window.ML_CURRICULUM.lessons.filter(l => l.lecture === 3).length >= 25);
@@ -52,6 +54,8 @@ for(let d=1;d<=8;d++){
   assert.ok(Math.abs(predictor(100)-expected[d-1][1])<0.001, "Degree "+d+" prediction must match NumPy");
 }
 assert.equal(t.C.lessons.length,61);
+assert.ok(t.C.lessons.every(l=>l.teaching && l.teaching.steps.length===3),"Each lecture topic needs three worked reasoning steps");
+assert.ok(context.window.ML_VIDEO_LINKS.m14?.endsWith(".mp4"),"Completed video should be playable on site");
 for (const lesson of t.C.lessons) {
   assert.ok(lesson.title && lesson.simple && lesson.university && lesson.pitfall && lesson.source, "Missing instructional content");
   assert.ok(lesson.choices.length >= 3, "Every lesson should include an interactive check");

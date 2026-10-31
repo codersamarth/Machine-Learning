@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import vm from "node:vm";
 const ctx={window:{}};
-for(const file of ["curriculum.js","lecture-plan.js","journey-data.js","video-packets.js"])vm.runInNewContext(readFileSync(file,"utf8"),ctx,{filename:file});
+for(const file of ["curriculum.js","lecture-plan.js","teaching-guides.js","journey-data.js","video-packets.js"])vm.runInNewContext(readFileSync(file,"utf8"),ctx,{filename:file});
 const p=ctx.window.ML_VIDEO_PACKETS,arr=p.topics;
 assert.equal(arr.length,92,"Should provide exactly one packet for each of 31 beginner and 61 course lessons");
 assert.equal(new Set(arr.map(t=>t.id)).size,92,"Every topic ID must be unique");
@@ -14,6 +14,7 @@ for(const t of arr){
  assert.ok(text.startsWith("# "+t.title),"Missing title: "+t.id);
  assert.ok(text.includes("Source provenance: "+t.source),"Source provenance missing: "+t.id);
  assert.ok(text.includes("## Beginner-friendly explanation"),"Explanation missing: "+t.id);
+ if(t.kind==="curriculum")assert.ok(text.includes("## Walkthrough from a single concrete scenario"),"Missing source-grounded worked example "+t.id);
  assert.ok(text.includes("## Analogy"),"Analogy missing: "+t.id);
  assert.ok(text.includes("## Understanding check"),"Quiz missing: "+t.id);
  assert.ok(text.includes("NOT a verbatim handout"),"Rights context missing: "+t.id);

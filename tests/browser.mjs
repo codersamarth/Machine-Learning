@@ -154,7 +154,7 @@ try{
    await p.keyboard.press("Escape");
    await p.reload();
    await p.locator("#status-filter").selectOption("ready");
-   assert.equal(await p.locator(".video-topic").count(),1);
+   assert.equal(await p.locator(".video-topic").count(),2);
    await p.locator('[data-topic="r06"]').click();
    assert.equal(await p.locator("#video-link").inputValue(),"https://notebooklm.google.com/notebook/example");
    await p.locator("#remove-video").click();

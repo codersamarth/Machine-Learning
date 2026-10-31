@@ -26,4 +26,6 @@ new Function(data);new Function(readFileSync("cases.js","utf8"));
 assert.ok(data.includes("traceDetails"),"A real Gelato code-state inspector is required");
 assert.ok(data.includes("searchResults"),"Global course search is required");
 assert.ok(data.includes("bookmarks"),"Bookmarks must be supported");
+assert.ok(data.includes("journeyParagraphs"),"Beginner text must use readable paragraph breaks");
+assert.ok(data.includes("journeyVideoBlock"),"Every beginner lesson must support on-page video playback");
 console.log("Journey audit: 31 lessons, valid line explanations and quizzes, stage coverage and code inspector ✓");

@@ -24,6 +24,7 @@ function sourceText(t){
   "## Beginner-friendly explanation",mdText(t.kind==="journey"?l.plain:l.simple),"",
   "## Analogy",mdText(l.analogy)
  ];
+ if(l.teaching){out.push("","## Walkthrough from a single concrete scenario",mdText(l.teaching.example));l.teaching.steps.forEach(function(step,i){out.push("Step "+(i+1)+": "+mdText(step))})}
  if(t.kind==="curriculum"){
   out.push("","## University-level explanation",mdText(l.university));
   if(l.formula)out.push("","## Formula or relationship",mdText(l.formula));

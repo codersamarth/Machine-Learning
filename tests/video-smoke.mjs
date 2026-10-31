@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import vm from "node:vm";
-const files=["curriculum.js","lecture-plan.js","journey-data.js"];
+const files=["curriculum.js","lecture-plan.js","teaching-guides.js","video-map.js","journey-data.js"];
 const elements=new Map(),events=new Map();
 function node(id){if(!elements.has(id))elements.set(id,{innerHTML:"",textContent:"",value:"",style:{},hidden:false,setAttribute(){},addEventListener(name,fn){events.set(id+":"+name,fn)},focus(){},getClientRects(){return [{width:1}]} });return elements.get(id)}
 const scope={
@@ -29,6 +29,7 @@ for(const topic of v.topics){
  const src=v.sourceFor(topic),prompt=v.promptFor(topic);
  assert.ok(src.startsWith("# "+topic.title),"Missing title in "+topic.id);
  assert.ok(src.includes("## Plain-English explanation"),"Missing basic explanation in "+topic.id);
+ if(topic.origin.startsWith("Lecture"))assert.ok(src.includes("## Worked explanation"),"Missing original worked explanation: "+topic.id);
  assert.ok(src.includes(topic.plain),"Video source is not grounded in the lesson text");
  assert.ok(src.includes("Source reference label:"),"Missing source reference");
  assert.ok(src.includes("Accuracy instructions"),"Missing hallucination guardrails");
