@@ -37,6 +37,7 @@ jobs:
           node tests/video-packets.mjs
           node tests/lecture-coverage.mjs
           node tests/publishing-smoke.mjs
+          node tests/production-queue.mjs
 
   browser-and-accessibility:
     runs-on: ubuntu-latest
