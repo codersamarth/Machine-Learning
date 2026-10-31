@@ -2,8 +2,8 @@
 (function(){
 "use strict";
 const C=window.ML_CURRICULUM||{lessons:[]},J=window.ML_JOURNEY||{lessons:[]};
-const names={zero:"Absolute basics",python:"Python foundations",data:"Understanding data",ml:"Machine learning concepts",regression:"Regression academy"};
-const topics=J.lessons.map(l=>({id:l.id,area:l.stage,title:l.title,hook:l.why,plain:l.plain,advanced:"",analogy:l.analogy,formula:"",code:l.code,steps:l.steps||[],pitfall:l.takeaway,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Guided beginner journey"})).concat(C.lessons.map(l=>({id:l.id,area:l.lecture===3?"regression":"ml",title:l.title,hook:l.hook,plain:l.simple,advanced:l.university,analogy:l.analogy,formula:l.formula,code:l.code,steps:[],pitfall:l.pitfall,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Lecture "+l.lecture+" learning path"})));
+const names={zero:"Absolute basics",python:"Python foundations",data:"Understanding data",lecture1:"Lecture 1 · ML and Python",lecture2:"Lecture 2 · Data preparation",lecture3:"Lecture 3 · Regression",supplement:"Supplementary learning"};
+const topics=J.lessons.map(l=>({id:l.id,area:l.stage,title:l.title,hook:l.why,plain:l.plain,advanced:"",analogy:l.analogy,formula:"",code:l.code,steps:l.steps||[],pitfall:l.takeaway,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Guided beginner journey"})).concat(C.lessons.map(l=>({id:l.id,area:"lecture"+l.lecture,kind:l.kind||"lecture",section:l.sectionTitle||"Lecture "+l.lecture,title:l.title,hook:l.hook,plain:l.simple,advanced:l.university,analogy:l.analogy,formula:l.formula,code:l.code,steps:[],pitfall:l.pitfall,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Lecture "+l.lecture+" learning path"})));
 const state={query:"",area:"all",status:"all",selected:null,links:{}};
 let oldFocus=null;
 const el=id=>document.getElementById(id),esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
@@ -15,7 +15,7 @@ function load(){try{const x=JSON.parse(localStorage.getItem("ml-video-links-v1")
 function save(){try{localStorage.setItem("ml-video-links-v1",JSON.stringify(state.links))}catch(e){notice("Storage unavailable; export your links to keep them")}}
 function download(name,content,mime){const blob=new Blob([content],{type:mime||"text/markdown;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function sourceFor(t){
- const out=["# "+t.title,"","Independent ML Playground source pack.","Learning area: "+names[t.area],"Curriculum: "+t.origin,"Source reference label: "+(t.source||"Supplementary explanation"),"","## Teaching question",t.hook,"","## Plain-English explanation",t.plain,""];
+ const out=["# "+t.title,"","Independent ML Playground source pack.","Learning area: "+names[t.area],"Curriculum: "+t.origin+" / "+(t.section||"Beginner foundations"),"Source reference label: "+(t.source||"Supplementary explanation"),"","## Teaching question",t.hook,"","## Plain-English explanation",t.plain,""];
  if(t.advanced)out.push("## Deeper explanation",t.advanced,"");
  if(t.analogy)out.push("## Everyday analogy",t.analogy,"");
  if(t.formula)out.push("## Equation",t.formula,"","Explain what each symbol means and give units where possible.","");
@@ -31,9 +31,9 @@ function promptFor(t){
 function statusCount(){return topics.filter(t=>!!state.links[t.id]).length}
 function render(){
  const q=state.query.trim().toLowerCase();
- const filtered=topics.filter(t=>(state.area==="all"||t.area===state.area)&&(state.status==="all"||(state.status==="ready"?!!state.links[t.id]:!state.links[t.id]))&&(!q||(t.title+" "+t.hook+" "+t.plain+" "+t.source).toLowerCase().includes(q)));
+ const filtered=topics.filter(t=>(state.area==="all"||t.area===state.area||(state.area==="supplement"&&t.kind==="supplement"))&&(state.status==="all"||(state.status==="ready"?!!state.links[t.id]:!state.links[t.id]))&&(!q||(t.title+" "+t.hook+" "+t.plain+" "+t.source).toLowerCase().includes(q)));
  notice(topics.length+" topic source packs prepared · "+statusCount()+" video links attached · "+(topics.length-statusCount())+" awaiting video generation");
- el("video-grid").innerHTML=filtered.map(t=>{const ready=!!state.links[t.id];return '<article class="video-topic"><span class="video-group">'+esc(names[t.area])+' · '+esc(t.id.toUpperCase())+'</span><span class="play-ico" aria-hidden="true">'+(ready?"▶️":"🎞️")+'</span><h3>'+esc(t.title)+'</h3><p>'+esc(t.hook)+'</p><div class="video-topic-bottom"><span class="video-chip '+(ready?"done":"")+'">'+(ready?"Link saved":"Source ready")+'</span><button type="button" class="btn alt small" data-topic="'+esc(t.id)+'">'+(ready?"Open video →":"Prepare video →")+'</button></div></article>'}).join("")||'<div class="card"><h3>No matching topics</h3><p>Try a different search.</p></div>';
+ el("video-grid").innerHTML=filtered.map(t=>{const ready=!!state.links[t.id];return '<article class="video-topic"><span class="video-group">'+esc(names[t.area])+' · '+esc(t.section||"Beginner foundations")+' · '+esc(t.id.toUpperCase())+(t.kind==="supplement"?" · OPTIONAL":"")+'</span><span class="play-ico" aria-hidden="true">'+(ready?"▶️":"🎞️")+'</span><h3>'+esc(t.title)+'</h3><p>'+esc(t.hook)+'</p><div class="video-topic-bottom"><span class="video-chip '+(ready?"done":"")+'">'+(ready?"Link saved":"Source ready")+'</span><button type="button" class="btn alt small" data-topic="'+esc(t.id)+'">'+(ready?"Open video →":"Prepare video →")+'</button></div></article>'}).join("")||'<div class="card"><h3>No matching topics</h3><p>Try a different search.</p></div>';
 }
 function player(link){
  if(!link)return '<div class="video-preview">No video has been attached. Download the source and use Gemini Notebook to generate it.</div>';

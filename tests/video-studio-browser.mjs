@@ -12,13 +12,13 @@ try{
  const page=await ctx.newPage();const errors=[];page.on("pageerror",e=>errors.push(e.message));
  await page.goto(base+"/video-studio.html?topic=z01");
  assert.match(await page.title(),/Video Studio/);
- assert.equal(await page.locator("#video-topic-count").innerText(),"71");
+ assert.equal(await page.locator("#video-topic-count").innerText(),"92");
  assert.match(await page.locator("#topic-detail h2").innerText(),/What exactly is code/);
  assert.match(await page.locator("#video-prompt").inputValue(),/detailed EXPLAINER/);
  await page.locator("#video-format").selectOption("short");
  assert.match(await page.locator("#video-prompt").inputValue(),/SHORT/);
- await page.locator("#topic-group").selectOption("regression");
- assert.match(await page.locator("#topic-results").innerText(),/32 topics found/);
+ await page.locator("#topic-group").selectOption("lecture3");
+ assert.match(await page.locator("#topic-results").innerText(),/33 topics found/);
  await page.locator('[data-select="r06"]').click();
  const dlPromise=page.waitForEvent("download");
  await page.locator('[data-video-act="download-source"]').click();
@@ -40,6 +40,6 @@ try{
   assert.match(await p.locator("#topic-detail h2").innerText(),/.+/);
   await ctx.close();
  }
- console.log("PASS Video Studio: 71 topics, prompts, source download, saved links, reload and 320–1024 px responsive layout");
+ console.log("PASS Video Studio: 92 topics, prompts, source download, saved links, reload and 320–1024 px responsive layout");
 }catch(e){console.error("FAIL Video Studio:",e);process.exitCode=1}
 finally{if(browser)await browser.close();if(server)server.kill("SIGTERM")}

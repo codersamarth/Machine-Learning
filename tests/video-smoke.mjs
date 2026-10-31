@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import vm from "node:vm";
-const files=["curriculum.js","journey-data.js"];
+const files=["curriculum.js","lecture-plan.js","journey-data.js"];
 const elements=new Map(),events=new Map();
 function node(id){if(!elements.has(id))elements.set(id,{innerHTML:"",textContent:"",value:"",style:{},hidden:false,setAttribute(){},addEventListener(name,fn){events.set(id+":"+name,fn)},focus(){},getClientRects(){return [{width:1}]} });return elements.get(id)}
 const scope={
@@ -17,13 +17,14 @@ script=script.replace(/\}\)\(\);\s*$/,"window.__videoTest={topics,sourceFor,prom
 vm.runInNewContext(script,scope,{filename:"video-library.js"});
 const v=scope.window.__videoTest;
 assert.ok(v,"Test hooks must be installed");
-assert.equal(v.topics.length,71,"All 31 beginner and 40 existing curriculum topics must have dedicated video sources");
+assert.equal(v.topics.length,92,"All 31 beginner and 61 course-aligned or supplementary topics must have dedicated video sources");
 assert.equal(new Set(v.topics.map(x=>x.id)).size,71,"Topic identifiers must be unique");
 assert.equal(v.topics.filter(x=>x.area==="zero").length,10);
 assert.equal(v.topics.filter(x=>x.area==="python").length,13);
 assert.equal(v.topics.filter(x=>x.area==="data").length,8);
-assert.equal(v.topics.filter(x=>x.area==="regression").length,32);
-assert.equal(v.topics.filter(x=>x.area==="ml").length,8);
+assert.equal(v.topics.filter(x=>x.area==="lecture3").length,33);
+assert.equal(v.topics.filter(x=>x.area==="lecture1").length,10);
+assert.equal(v.topics.filter(x=>x.area==="lecture2").length,18);
 for(const topic of v.topics){
  const src=v.sourceFor(topic),prompt=v.promptFor(topic);
  assert.ok(src.startsWith("# "+topic.title),"Missing title in "+topic.id);
@@ -39,6 +40,6 @@ assert.ok(v.validUrl("https://notebooklm.google.com/notebook/abc"));
 assert.ok(!v.validUrl("javascript:alert(1)"));
 assert.ok(!v.validUrl("data:text/html,hello"));
 assert.match(node("video-grid").innerHTML,/Prepare video/);
-assert.match(node("status").textContent,/71 topic source packs prepared/);
+assert.match(node("status").textContent,/92 topic source packs prepared/);
 assert.ok(events.has("download-all:click"));
-console.log("Video Academy smoke tests passed: 71 sources and prompts, unique IDs, source fidelity and safe links");
+console.log("Video Academy smoke tests passed: 92 sources and prompts, unique IDs, source fidelity and safe links");

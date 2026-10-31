@@ -136,10 +136,10 @@ try{
  await check("Video Academy source packs, video link persistence and lesson-specific prompts",async()=>{
    await p.goto(base+"/video-library.html");
    assert.match(await p.locator("h1").first().innerText(),/video academy/i);
-   assert.match(await p.locator("#status").innerText(),/71 topic source packs prepared/);
-   assert.equal(await p.locator(".video-topic").count(),71);
-   await p.locator("#group").selectOption("regression");
-   assert.equal(await p.locator(".video-topic").count(),32);
+   assert.match(await p.locator("#status").innerText(),/92 topic source packs prepared/);
+   assert.equal(await p.locator(".video-topic").count(),92);
+   await p.locator("#group").selectOption("lecture3");
+   assert.equal(await p.locator(".video-topic").count(),33);
    await p.locator("#group").selectOption("all");
    await p.locator('[data-topic="r06"]').first().click();
    assert.match(await p.locator("#detail-heading").innerText(),/Residuals/);

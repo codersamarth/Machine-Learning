@@ -24,6 +24,7 @@ const context = {
   setTimeout() {}, clearTimeout() {}, console, Set, Blob
 };
 vm.runInNewContext(curriculum, context);
+vm.runInNewContext(readFileSync("lecture-plan.js","utf8"), context);
 assert.equal(context.window.ML_CURRICULUM.lectures.length, 15);
 assert.equal(context.window.ML_CURRICULUM.gelato.length, 13);
 assert.ok(context.window.ML_CURRICULUM.lessons.filter(l => l.lecture === 3).length >= 25);
@@ -50,7 +51,7 @@ for(let d=1;d<=8;d++){
   assert.ok(Math.abs(stats.rmse-expected[d-1][0])<0.001, "Degree "+d+" must match independent NumPy OLS training RMSE");
   assert.ok(Math.abs(predictor(100)-expected[d-1][1])<0.001, "Degree "+d+" prediction must match NumPy");
 }
-assert.equal(t.C.lessons.length,40);
+assert.equal(t.C.lessons.length,61);
 for (const lesson of t.C.lessons) {
   assert.ok(lesson.title && lesson.simple && lesson.university && lesson.pitfall && lesson.source, "Missing instructional content");
   assert.ok(lesson.choices.length >= 3, "Every lesson should include an interactive check");

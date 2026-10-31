@@ -6,7 +6,7 @@ A colourful, interactive beginner-first course companion. This is an **independe
 
 **New beginner-first path:** [Start from Zero →](https://coding-five-woad.vercel.app/journey)
 
-The guided path teaches **31 additional micro-lessons** (10 absolute basics, 13 Python reading, 8 data foundations), then connects to 32 regression lessons, the real Gelato notebook inspector and independent code-reading challenges. It includes a searchable glossary and course search, breadcrumbs, previous/next, bookmarks, recent lessons and refresh-safe links. Step-through states and regression coefficients are calculated from genuine Gelato observations; they are explanatory traces, not claims of running arbitrary Python.
+The guided path teaches **31 additional micro-lessons** (10 absolute basics, 13 Python reading, 8 data foundations), then connects to the 33-topic Lecture 3 regression path, the real Gelato notebook inspector and independent code-reading challenges. It includes a searchable glossary and course search, breadcrumbs, previous/next, bookmarks, recent lessons and refresh-safe links. Step-through states and regression coefficients are calculated from genuine Gelato observations; they are explanatory traces, not claims of running arbitrary Python.
 
 **No-upload start:** Authentic Gelato sales points are bundled. The Titanic and Diamond Case Studio launches with clearly labelled synthetic demonstration records, so students can practise immediately. Original class-specific CSVs remain optional and are processed locally when selected; restricted materials are not redistributed in this public site. See [source manifest](data/source-manifest.json) and [implementation report](IMPROVEMENT_REPORT.md).
 
@@ -16,7 +16,7 @@ The guided path teaches **31 additional micro-lessons** (10 absolute basics, 13 
 
 ## Available teaching material
 
-The site contains **40 lessons** based on the materials supplied so far: 8 on Python, ML and preprocessing foundations, plus 32 on regression. It also has 8 annotated code walkthroughs and 10 progressive Python exercises. Lecture slots 4–15 are in the syllabus map, but are **not** populated with fabricated professor-specific material.
+The site contains **61 lecture-ordered lessons** based on the materials supplied so far: 10 for Lecture 1 (ML, optimization, Python and AI terminology), 18 for Lecture 2 (Titanic data preparation and feature engineering), and 33 for Lecture 3 (supervised learning, Gelato, polynomial regression, validation and target leakage). It also has 8 annotated code walkthroughs and 10 progressive Python exercises. Lecture slots 4–15 are in the syllabus map, but are **not** populated with fabricated professor-specific material.
 
 The regression academy covers observations, features, labels, shapes, plotting, slope, intercept, least squares, residuals, predictions, MAE/MSE/RMSE/R², validation and testing, polynomial regression, overfitting, leakage, regularization, pipelines and debugging. The live Gelato simulator uses the 13 records supplied in `Gelato_Times_Sales.csv`; numerical OLS fitting is checked against independent NumPy reference results.
 
@@ -98,10 +98,24 @@ GitHub Actions runs syntax, numerical, real Chromium and automated WCAG checks o
 
 See [QUALITY_AUDIT.md](QUALITY_AUDIT.md) for tested functionality and remaining limitations.
 
+
+## Lecture-wise coverage and recommended teaching order
+
+The [Learning Path](https://coding-five-woad.vercel.app/#learn) follows the **actual source handout sequence** for Lectures 1–3, not alphabetical topic order. The [Regression Academy](https://coding-five-woad.vercel.app/#regression), [Video Academy](https://coding-five-woad.vercel.app/video-library.html) and [Video Studio](https://coding-five-woad.vercel.app/video-studio.html) use that same sequence. The course-specific content is divided into chapters and labels supplementary extensions separately.
+
+| Lecture | Available lecture-aligned topics | Source-supported learning sequence |
+|---|---:|---|
+| 1 — ML/optimization, Python | 10 | Business goals → supervised/unsupervised/optimization → AI & GenAI definitions → Colab/Python syntax → loops → plotting |
+| 2 — Data preprocessing | 18 | Raw-data/Titanic inspection → corruption/outliers/duplicates → missingness/imputation → scaling/encoding → binning → transformations/interactions |
+| 3 — Regression | 33 | Target and Gelato data → fitted line & code → polynomial curves/overfitting → train/validation/test → leakage → clearly separate advanced extras |
+| 4–15 | No source-verified lessons yet | The lecture names follow the original course roadmap; original handouts are still needed to establish complete content |
+
+See [LECTURE_COVERAGE.md](LECTURE_COVERAGE.md) for the full slide-topic-to-lesson mapping, provenance, teaching caveats and missing-content policy. Administrative dates/grade logistics remain on the official LMS, not in an evergreen student study aid.
+
 ## Video Overview preparation for every topic
 
-A [mobile-friendly Video Studio](video-studio.html) now prepares **71 separate topic source packets** (31 beginning/Python/data micro-lessons and 40 course lessons). Each packet uses only existing public ML Playground explanations and the source labels already attached to that lesson. Per-topic steering prompts are available in both full Explainer and short revision formats. Use **Download all 71 topic packets** to obtain a ZIP with Markdown source files and prompts, or download/copy any individual topic packet.
+A [mobile-friendly Video Studio](video-studio.html) now prepares **92 separate topic source packets** (31 beginning/Python/data micro-lessons and 61 course lessons). Each packet uses only existing public ML Playground explanations and the source labels already attached to that lesson. Per-topic steering prompts are available in both full Explainer and short revision formats. Use **Download all topic packets** to obtain a ZIP with Markdown source files and prompts, or download/copy any individual topic packet.
 
 **Videos are not generated or hosted in this repo.** Open [NotebookLM](https://notebooklm.google.com/), add one topic's Markdown file as a source, choose Studio → Video Overview → Explainer, and paste the provided prompt. After human review, save a permitted HTTPS share link in Video Studio. Links saved in the website are browser-local; to publish video links for all visitors, add verified share URLs to `video-map.js` and commit them. Check notebook sharing permissions and rights to source material first.
 
-`tests/video-packets.mjs` checks all 71 topic packs. AI video narration may contain inaccuracies; it is not a substitute for official lecture materials.
+`tests/video-packets.mjs` checks all 92 topic packs. AI video narration may contain inaccuracies; it is not a substitute for official lecture materials.

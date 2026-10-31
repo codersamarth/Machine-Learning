@@ -6,9 +6,9 @@ var topics=J.lessons.map(function(l){
  return {id:l.id,kind:"journey",group:l.stage,title:l.title,source:l.source,lesson:l,
    section:({zero:"Start from zero",python:"Python fundamentals",data:"Data foundations"})[l.stage]||"Beginner path"};
 }).concat(C.lessons.map(function(l){
- return {id:l.id,kind:"curriculum",group:l.lecture===3?"regression":"lecture"+l.lecture,
+ return {id:l.id,kind:"curriculum",group:"lecture"+l.lecture,
    title:l.title,source:l.source,lesson:l,
-   section:({1:"ML & Python · Lecture 1",2:"Preprocessing · Lecture 2",3:"Regression · Lecture 3"})[l.lecture]};
+   section:(l.sectionTitle||({1:"ML & Python · Lecture 1",2:"Preprocessing · Lecture 2",3:"Regression · Lecture 3"})[l.lecture])};
 }));
 if(new Set(topics.map(function(t){return t.id})).size!==topics.length)throw new Error("Duplicate video topic IDs");
 function mdText(v){return String(v==null?"":v).replace(/\r\n/g,"\n").trim()}
@@ -64,7 +64,7 @@ function steeringPrompt(t,format){
   "Use a calm, clear voice and legible whiteboard-style visuals. Keep formula and code annotations large enough for a phone. Highlight code one line at a time. Avoid visually distracting decorations.",
   "If code is an incomplete fragment, label it as such. Do not invent any printed result or performance metric when source evidence is missing.",
   "Preserve this provenance: "+t.source+". Supplementary concepts must not be described as official lecture content.",
-  "This video is ONE of 71 topics; never summarize the other topics.",
+  "This video is ONE focused topic; never summarise unrelated topics.",
   "End with the source-based question: "+(l.question||"Explain the input, operation and output in your own words.")
  ].join("\n\n");
 }

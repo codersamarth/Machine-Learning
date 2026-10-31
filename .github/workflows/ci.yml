@@ -19,6 +19,7 @@ jobs:
         run: |
           node --check app.js
           node --check curriculum.js
+          node --check lecture-plan.js
           node --check cases.js
           node --check ingest.js
       - name: Run browserless app smoke tests
@@ -27,8 +28,10 @@ jobs:
         run: |
           node tests/journey-smoke.mjs
           node tests/video-smoke.mjs
-      - name: Verify all 71 NotebookLM source packets
-        run: node tests/video-packets.mjs
+      - name: Verify the lecture-ordered NotebookLM source packets and topic coverage
+        run: |
+          node tests/video-packets.mjs
+          node tests/lecture-coverage.mjs
 
   browser-and-accessibility:
     runs-on: ubuntu-latest
