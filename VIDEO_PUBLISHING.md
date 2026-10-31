@@ -6,7 +6,7 @@ The website has 92 video topic slots. A video is marked ready only after it has 
 
 Every course topic now has its own three-step worked teaching example, its own beginner explanation, a separate university explanation and a knowledge check. The 31 beginner prerequisites continue to include line-by-line Python explanations.
 
-Videos with MP4/WebM addresses play directly on the website in an HTML5 player, rather than redirecting students to an external video page. The initial completed video is referenced from HeyGen media delivery; the website has also been provisioned with its own Vercel Blob public video storage.
+Videos with MP4/WebM addresses play directly on the website in an HTML5 player, rather than redirecting students to an external video page. The first completed video has been ingested into the website’s own Vercel Blob storage, and its video map now points to that durable media URL.
 
 ## Publishing pipeline
 
@@ -16,7 +16,7 @@ For HeyGen video jobs that support callback URLs, configure the job to notify th
 
 The Vercel project has BLOB_READ_WRITE_TOKEN and ML_VIDEO_WEBHOOK_TOKEN configured as encrypted server-side values. Neither credential belongs in the public repository or front-end JavaScript.
 
-Important: The first HeyGen Video Agent video was generated before the webhook was configured. Its current player is therefore linked to the direct HeyGen media source. Fully automatic delivery requires each future generation job to use the webhook-compatible HeyGen API method with the callback URL supplied. The ChatGPT HeyGen Video Agent tool itself does not expose a callback setting.
+Important: The first HeyGen Video Agent video was generated before the webhook was configured. Its completed MP4 was subsequently uploaded through the webhook and the public video map now points to its Vercel Blob copy. Fully automatic delivery requires each future generation job to use the webhook-compatible HeyGen API method with the callback URL supplied. The ChatGPT HeyGen Video Agent tool itself does not expose a callback setting.
 
 ## Bulk production limits
 
@@ -25,3 +25,7 @@ The connected HeyGen account is currently on the Free plan. Producing 91 additio
 ## Quality assurance
 
 Always fact-check generated videos for maths, Python syntax, numerical predictions, permissions and source attribution before public sharing. The website's lesson text is original study material rather than a copy of protected university slides. Never publish restricted class handouts as public media.
+
+## Verified first upload
+
+The authenticated webhook accepted the existing Lecture 1.1 (`m14`) HeyGen MP4 and responded **HTTP 201 Published**. The permanent video URL uses the project's public Vercel Blob store. A fresh request to `/api/videos` returned `m14` with that Blob URL. All other topic videos remain pending generation.
