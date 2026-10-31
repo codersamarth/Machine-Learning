@@ -45,7 +45,7 @@ function showLecture(n){
  var l=C.lectures[n-1],title=l?l.title:"Lecture "+n,official=C.lessons.filter(function(x){return x.lecture===n});
  a.innerHTML='<div class="sectionhead"><h2>Lecture '+n+': '+h(title)+'</h2><span class="pill">'+official.length+' prepared topics</span></div>'+
  (official.length?'<p class="muted">Ordered to match the supplied handout, with additional beginner explanations placed beside the concept they support. Optional extensions are labelled.</p>'+lectureSectionsHtml(n,ls):
- '<div class="card"><p>We have the course roadmap title, but not this lecture’s teaching handout. No professor-specific lessons have been invented.</p><p>You can import your own material for personal review.</p>'+btn("Add a custom lesson","route:studio")+'</div>');
+ '<div class="card"><p>The official lecture-specific handout is not available, so no professor-specific lessons have been invented.</p><p>Personal imported lessons are shown below and are not independently source-verified.</p>'+btn("Add a custom lesson","route:studio")+'</div>'+(ls.length?'<div class="sectionhead"><h3>My imported lessons</h3></div><div class="lessonlist">'+ls.map(lessonButton).join('')+'</div>':''));
  a.scrollIntoView({block:"start",behavior:"smooth"})
 }
 function pageRegression(){
