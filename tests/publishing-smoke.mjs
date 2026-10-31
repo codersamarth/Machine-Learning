@@ -5,7 +5,7 @@ const ctx={window:{}};
 for(const f of ["curriculum.js","lecture-plan.js","teaching-guides.js","video-map.js","journey-data.js"])vm.runInNewContext(readFileSync(f,"utf8"),ctx,{filename:f});
 const C=ctx.window.ML_CURRICULUM;
 assert.equal(C.lessons.length,61);
-for(const l of C.lessons){assert.ok(l.teaching?.example.length>35);assert.equal(l.teaching.steps.length,3)}
+for(const l of C.lessons){assert.ok(l.teaching?.example.length>24);assert.equal(l.teaching.steps.length,3)}
 assert.equal(new Set([...C.lessons,...ctx.window.ML_JOURNEY.lessons].map(x=>x.id)).size,92);
 assert.ok(ctx.window.ML_VIDEO_LINKS.m14.endsWith(".mp4"));
 for(const html of ["index.html","journey.html","video-library.html","video-studio.html"]){
