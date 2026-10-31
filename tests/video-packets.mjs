@@ -5,7 +5,7 @@ const ctx={window:{}};
 for(const file of ["curriculum.js","lecture-plan.js","journey-data.js","video-packets.js"])vm.runInNewContext(readFileSync(file,"utf8"),ctx,{filename:file});
 const p=ctx.window.ML_VIDEO_PACKETS,arr=p.topics;
 assert.equal(arr.length,92,"Should provide exactly one packet for each of 31 beginner and 61 course lessons");
-assert.equal(new Set(arr.map(t=>t.id)).size,71,"Every topic ID must be unique");
+assert.equal(new Set(arr.map(t=>t.id)).size,92,"Every topic ID must be unique");
 assert.equal(arr.filter(t=>t.kind==="journey").length,31);
 assert.equal(arr.filter(t=>t.kind==="curriculum").length,61);
 assert.equal(arr.filter(t=>t.group==="lecture3").length,33);
