@@ -8,7 +8,7 @@ function h(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&l
 function cleanUrl(raw){
  try{var u=new URL(String(raw).trim());if(u.protocol!=="https:")return "";if(u.href.length>1600)return "";if(u.username||u.password)return "";return u.href}catch(e){return ""}
 }
-function videoLink(id){return cleanUrl(localLinks[id]||publicLinks[id]||"")}
+function videoLink(id){return cleanUrl(publicLinks[id]||localLinks[id]||"")}
 var query=new URLSearchParams(window.location.search);
 var chosen=P.topics.find(function(t){return t.id===query.get("topic")})||P.topics[0];
 var currentFormat="explainer";

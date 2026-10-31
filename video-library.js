@@ -3,7 +3,7 @@
 "use strict";
 const C=window.ML_CURRICULUM||{lessons:[]},J=window.ML_JOURNEY||{lessons:[]};
 const names={zero:"Absolute basics",python:"Python foundations",data:"Understanding data",lecture1:"Lecture 1 · ML and Python",lecture2:"Lecture 2 · Data preparation",lecture3:"Lecture 3 · Regression",supplement:"Supplementary learning"};
-const topics=J.lessons.map(l=>({id:l.id,area:l.stage,title:l.title,hook:l.why,plain:l.plain,advanced:"",analogy:l.analogy,formula:"",code:l.code,steps:l.steps||[],pitfall:l.takeaway,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Guided beginner journey",teaching:{example:l.analogy,steps:l.steps||[]}})).concat(C.lessons.map(l=>({id:l.id,area:"lecture"+l.lecture,kind:l.kind||"lecture",section:l.sectionTitle||"Lecture "+l.lecture,title:l.title,hook:l.hook,plain:l.simple,advanced:l.university,analogy:l.analogy,formula:l.formula,code:l.code,steps:[],pitfall:l.pitfall,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Lecture "+l.lecture,teaching:l.teaching||null+" learning path"})));
+const topics=J.lessons.map(l=>({id:l.id,area:l.stage,title:l.title,hook:l.why,plain:l.plain,advanced:"",analogy:l.analogy,formula:"",code:l.code,steps:l.steps||[],pitfall:l.takeaway,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Guided beginner journey",teaching:{example:l.analogy,steps:l.steps||[]}})).concat(C.lessons.map(l=>({id:l.id,area:"lecture"+l.lecture,kind:l.kind||"lecture",section:l.sectionTitle||"Lecture "+l.lecture,title:l.title,hook:l.hook,plain:l.simple,advanced:l.university,analogy:l.analogy,formula:l.formula,code:l.code,steps:[],pitfall:l.pitfall,question:l.question,choices:l.choices||[],correct:l.correct,source:l.source,origin:"Lecture "+l.lecture,teaching:l.teaching||null})));
 const state={query:"",area:"all",status:"all",selected:null,links:{}};
 let oldFocus=null;
 const el=id=>document.getElementById(id),esc=s=>String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
@@ -11,7 +11,7 @@ const notice=s=>el("status").textContent=s;
 const safeName=s=>s.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,58);
 const filename=t=>t.id+"-"+safeName(t.title)+".md";
 function validUrl(s){try{const u=new URL(s);return u.protocol==="https:"||(u.protocol==="http:"&&["localhost","127.0.0.1"].includes(u.hostname))}catch(e){return false}}
-function load(){state.links=Object.assign({},window.ML_VIDEO_LINKS||{});try{const x=JSON.parse(localStorage.getItem("ml-video-links-v1"));if(x&&typeof x==="object"&&!Array.isArray(x))Object.assign(state.links,x)}catch(e){}}
+function load(){state.links={};try{const x=JSON.parse(localStorage.getItem("ml-video-links-v1"));if(x&&typeof x==="object"&&!Array.isArray(x))Object.assign(state.links,x)}catch(e){}Object.assign(state.links,window.ML_VIDEO_LINKS||{})}
 function save(){try{localStorage.setItem("ml-video-links-v1",JSON.stringify(state.links))}catch(e){notice("Storage unavailable; export your links to keep them")}}
 function download(name,content,mime){const blob=new Blob([content],{type:mime||"text/markdown;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function sourceFor(t){
