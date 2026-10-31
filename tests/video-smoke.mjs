@@ -18,7 +18,7 @@ vm.runInNewContext(script,scope,{filename:"video-library.js"});
 const v=scope.window.__videoTest;
 assert.ok(v,"Test hooks must be installed");
 assert.equal(v.topics.length,92,"All 31 beginner and 61 course-aligned or supplementary topics must have dedicated video sources");
-assert.equal(new Set(v.topics.map(x=>x.id)).size,71,"Topic identifiers must be unique");
+assert.equal(new Set(v.topics.map(x=>x.id)).size,92,"Topic identifiers must be unique");
 assert.equal(v.topics.filter(x=>x.area==="zero").length,10);
 assert.equal(v.topics.filter(x=>x.area==="python").length,13);
 assert.equal(v.topics.filter(x=>x.area==="data").length,8);
