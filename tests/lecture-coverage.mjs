@@ -42,7 +42,7 @@ for(let n=1;n<=3;n++){
    list.push(id);
   }
  }
- assert.deepEqual(C.lessons.filter(l=>l.lecture===n).map(l=>l.id),list,"Lecture "+n+" does not follow declared handout order");
+ assert.deepEqual(Array.from(C.lessons.filter(l=>l.lecture===n).map(l=>l.id)),list,"Lecture "+n+" does not follow declared handout order");
  ordered.push(...list);
 }
 assert.equal(new Set(ordered).size,61);
