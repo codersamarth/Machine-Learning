@@ -161,6 +161,24 @@ try{
    await p.keyboard.press("Escape");
  });
 
+ await check("Production tracker: live publication count and lecture filters",async()=>{
+   await p.goto(base+"/video-production.html");
+   await p.waitForFunction(()=>document.querySelectorAll(".vp-item").length===92,null,{timeout:10000});
+   assert.equal(await p.locator("#published-count").innerText(),"1");
+   assert.equal(await p.locator("#remaining-count").innerText(),"91");
+   assert.equal(await p.locator(".vp-item").count(),92);
+   await p.locator("#vp-group").selectOption("1");
+   assert.equal(await p.locator(".vp-item").count(),10);
+   await p.locator("#vp-status").selectOption("ready");
+   assert.equal(await p.locator(".vp-item").count(),1);
+   assert.ok(await p.locator('.vp-item a[href="/#lesson=m14"]').count());
+   await p.locator("#vp-status").selectOption("pending");
+   assert.equal(await p.locator(".vp-item").count(),9);
+   await p.locator("#vp-group").selectOption("all");
+   await p.locator("#vp-status").selectOption("all");
+   await p.locator("#vp-search").fill("Target leakage");
+   assert.equal(await p.locator(".vp-item").count(),1);
+ });
  await check("Mobile navigation and viewport",async()=>{
   const mobile=await browser.newContext({viewport:{width:390,height:844},isMobile:true,deviceScaleFactor:2});
   const m=await mobile.newPage();await m.goto(base);await m.locator("#menu").click();

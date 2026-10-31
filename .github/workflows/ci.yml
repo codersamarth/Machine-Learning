@@ -38,6 +38,7 @@ jobs:
           node tests/lecture-coverage.mjs
           node tests/publishing-smoke.mjs
           node tests/production-queue.mjs
+          node tests/site-integrity.mjs
 
   browser-and-accessibility:
     runs-on: ubuntu-latest

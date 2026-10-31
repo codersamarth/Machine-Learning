@@ -29,6 +29,7 @@ try{
  await scan("/cases.html");
  await scan("/ingest.html");
  await scan("/video-library.html");
+ await scan("/video-production.html");
  await scan("/video-library.html",async()=>{await page.locator('[data-topic="r01"]').first().click()});
  await scan("/journey.html");
  await scan("/journey.html#lesson=z01");
@@ -42,7 +43,7 @@ try{
 
  const phoneContext=await browser.newContext({viewport:{width:320,height:700},isMobile:true,deviceScaleFactor:2,touchscreen:true});
  const phone=await phoneContext.newPage();
- for(const route of ["/","/#regression","/#lab","/#code","/cases.html","/ingest.html","/journey.html"]){
+ for(const route of ["/","/#regression","/#lab","/#code","/cases.html","/ingest.html","/journey.html","/video-production.html"]){
   await phone.goto(base+route);
   const report=await new AxeBuilder({page:phone}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
   const issue=report.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target.join(" ")).slice(0,5)}));
@@ -50,7 +51,7 @@ try{
   console.log((issue.length?"FAIL ":"PASS ")+"mobile-320:"+route+" "+JSON.stringify(issue));
  }
  await phoneContext.close();
- console.log("A11Y SUMMARY: "+JSON.stringify({scans:20,violations:failures.length}));
+ console.log("A11Y SUMMARY: "+JSON.stringify({scans:22,violations:failures.length}));
  if(failures.length)process.exitCode=1;
 }catch(e){console.error(e);process.exitCode=1}
 finally{if(browser)await browser.close();if(server)server.kill("SIGTERM")}

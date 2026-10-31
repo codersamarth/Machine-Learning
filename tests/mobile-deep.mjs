@@ -4,7 +4,7 @@ import {setTimeout as sleep} from "node:timers/promises";
 
 const port=8799,base=process.env.ML_BASE_URL||"http://127.0.0.1:"+port;
 const server=process.env.ML_BASE_URL?null:spawn("python3",["-m","http.server",String(port),"--bind","127.0.0.1"],{cwd:process.cwd(),stdio:"ignore"});
-const routes=["/","/#regression","/#lab","/#data","/#code","/#python","/#quiz","/#notes","/cases.html","/ingest.html","/video-library.html","/journey.html","/journey.html#trace","/journey.html#lesson=z01"];
+const routes=["/","/#regression","/#lab","/#data","/#code","/#python","/#quiz","/#notes","/cases.html","/ingest.html","/video-library.html","/video-production.html","/journey.html","/journey.html#trace","/journey.html#lesson=z01"];
 let browser;const fails=[];
 try{
   for(let i=0;i<45;i++){try{if((await fetch(base)).ok)break}catch(e){}await sleep(130)}
