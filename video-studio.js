@@ -16,6 +16,7 @@ function toast(s){var t=$("video-toast");t.textContent=s;t.style.display="block"
 function updateCounts(){
  $("video-topic-count").textContent=P.topics.length;
  $("video-saved-count").textContent=P.topics.filter(function(t){return !!videoLink(t.id)}).length;
+ var published=$("public-video-count");if(published)published.textContent=P.topics.filter(function(t){return !!cleanUrl(publicLinks[t.id]||"")}).length;
 }
 function renderList(){
  var search=$("topic-search").value.trim().toLowerCase(),group=$("topic-group").value;
