@@ -69,8 +69,8 @@
         "quiz": "A spam filter learns from examples marked spam. What kind of task is it?",
         "correctAnswer": "Supervised ML"
       },
-      "status": "queued",
-      "finishedVideoId": null
+      "status": "published",
+      "finishedVideoId": "bc559409bfff4d44b3c444e173a2fe05"
     },
     {
       "order": 3,
