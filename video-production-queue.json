@@ -98,8 +98,8 @@
         "quiz": "Which activity directly chooses the best route under limits?",
         "correctAnswer": "Optimization"
       },
-      "status": "queued",
-      "finishedVideoId": null
+      "status": "published",
+      "finishedVideoId": "ae3e7448bde24231a67665d20d9ac99d"
     },
     {
       "order": 4,
